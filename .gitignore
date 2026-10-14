@@ -1,5 +1,5 @@
 # Dependencies
-node_modules/
+node_modules
 .pnpm-store/
 node-compile-cache/
 
@@ -43,3 +43,6 @@ key/
 .codegraph/
 .cozeproj/reduction
 .preview
+
+# Frontend leftover drizzle models (server owns its own)
+src/storage/

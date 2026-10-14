@@ -25,5 +25,6 @@
     }
   },
   "include": ["./src", "./types", "./config"],
+  "exclude": ["./src/storage", "./dist", "./node_modules"],
   "compileOnSave": false
 }
