@@ -1,0 +1,253 @@
+/**
+ * 全局样式与设计令牌
+ * 色板：玫瑰粉主色 + 米白底 + 墨绿点缀，贴合花店调性。
+ * 尺寸统一用 rpx（750rpx = 屏宽），字号在 24~40rpx 区间。
+ */
+page {
+  --rose: #c2185b;
+  --rose-light: #f8bbd0;
+  --rose-bg: #fdf2f6;
+  --green: #2e5d4f;
+  --ink: #2b2522;
+  --ink-2: #6b625c;
+  --ink-3: #9a9490;
+  --line: #ece7e3;
+  --bg: #f6f5f3;
+  --card: #ffffff;
+  --warn: #e8833a;
+  --danger: #d93b3b;
+  --radius: 20rpx;
+  --radius-sm: 12rpx;
+  --shadow: 0 4rpx 20rpx rgba(43, 37, 34, 0.06);
+
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 28rpx;
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', sans-serif;
+  line-height: 1.5;
+  box-sizing: border-box;
+}
+
+view, text, button, input, textarea, scroll-view, image, navigator {
+  box-sizing: border-box;
+}
+
+/* ---------- 布局工具 ---------- */
+.row { display: flex; align-items: center; }
+.row-between { display: flex; align-items: center; justify-content: space-between; }
+.row-center { display: flex; align-items: center; justify-content: center; }
+.col { display: flex; flex-direction: column; }
+.flex-1 { flex: 1; min-width: 0; }
+.gap-s { gap: 12rpx; }
+.gap-m { gap: 20rpx; }
+.wrap { flex-wrap: wrap; }
+
+/* ---------- 卡片 ---------- */
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 24rpx;
+  margin: 20rpx 24rpx;
+}
+.card-tight { padding: 0; overflow: hidden; }
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 32rpx 24rpx 16rpx;
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+}
+.section-title::before {
+  content: '';
+  width: 6rpx;
+  height: 30rpx;
+  background: var(--rose);
+  border-radius: 3rpx;
+}
+
+/* ---------- 文本 ---------- */
+.t-sm { font-size: 24rpx; }
+.t-md { font-size: 28rpx; }
+.t-lg { font-size: 32rpx; }
+.t-xl { font-size: 40rpx; }
+.t-bold { font-weight: 600; }
+.t-muted { color: var(--ink-3); }
+.t-sub { color: var(--ink-2); }
+.t-rose { color: var(--rose); }
+.t-danger { color: var(--danger); }
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ellipsis-2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+/* ---------- 价格 ---------- */
+.price {
+  color: var(--rose);
+  font-weight: 600;
+  font-family: 'DIN Alternate', -apple-system, sans-serif;
+}
+.price::before {
+  content: '¥';
+  font-size: 0.72em;
+  margin-right: 2rpx;
+}
+.price-origin {
+  color: var(--ink-3);
+  font-size: 24rpx;
+  text-decoration: line-through;
+  margin-left: 8rpx;
+}
+
+/* ---------- 按钮 ---------- */
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 88rpx;
+  border-radius: 44rpx;
+  font-size: 30rpx;
+  font-weight: 500;
+  border: none;
+  line-height: 1;
+  padding: 0 40rpx;
+}
+.btn::after { border: none; }
+.btn-primary {
+  background: linear-gradient(135deg, #d81b60, #c2185b);
+  color: #fff;
+}
+.btn-primary[disabled] {
+  background: #ddd6d2;
+  color: #fff;
+}
+.btn-outline {
+  background: transparent;
+  color: var(--rose);
+  border: 2rpx solid var(--rose);
+}
+.btn-ghost {
+  background: var(--rose-bg);
+  color: var(--rose);
+}
+.btn-plain {
+  background: #fff;
+  color: var(--ink-2);
+  border: 2rpx solid var(--line);
+}
+.btn-sm {
+  height: 60rpx;
+  font-size: 26rpx;
+  border-radius: 30rpx;
+  padding: 0 28rpx;
+}
+
+/* ---------- 标签 ---------- */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  height: 36rpx;
+  padding: 0 12rpx;
+  border-radius: 6rpx;
+  font-size: 22rpx;
+  background: var(--rose-bg);
+  color: var(--rose);
+}
+.tag-green { background: #e8f1ee; color: var(--green); }
+.tag-warn { background: #fdf0e5; color: var(--warn); }
+.tag-gray { background: #f2efec; color: var(--ink-3); }
+
+/* ---------- 列表项 ---------- */
+.cell {
+  display: flex;
+  align-items: center;
+  min-height: 100rpx;
+  padding: 20rpx 24rpx;
+  background: #fff;
+  border-bottom: 2rpx solid var(--line);
+}
+.cell:last-child { border-bottom: none; }
+.cell-label { color: var(--ink-2); margin-right: 20rpx; }
+.cell-value { flex: 1; text-align: right; color: var(--ink); }
+.cell-arrow::after {
+  content: '';
+  width: 16rpx;
+  height: 16rpx;
+  border-top: 3rpx solid var(--ink-3);
+  border-right: 3rpx solid var(--ink-3);
+  transform: rotate(45deg);
+  margin-left: 12rpx;
+  flex-shrink: 0;
+}
+
+/* ---------- 输入 ---------- */
+.input {
+  height: 80rpx;
+  padding: 0 24rpx;
+  background: #faf8f7;
+  border-radius: var(--radius-sm);
+  font-size: 28rpx;
+  width: 100%;
+}
+.textarea {
+  min-height: 160rpx;
+  padding: 20rpx 24rpx;
+  background: #faf8f7;
+  border-radius: var(--radius-sm);
+  font-size: 28rpx;
+  width: 100%;
+}
+
+/* ---------- 底部操作栏 ---------- */
+.bottom-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #fff;
+  border-top: 2rpx solid var(--line);
+  padding: 16rpx 24rpx calc(16rpx + env(safe-area-inset-bottom));
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  z-index: 100;
+}
+/* 配合 bottom-bar 使用，避免内容被遮挡 */
+.bottom-placeholder {
+  height: calc(140rpx + env(safe-area-inset-bottom));
+}
+
+/* ---------- 骨架屏 ---------- */
+.skeleton {
+  background: linear-gradient(90deg, #efebe8 25%, #f7f4f2 37%, #efebe8 63%);
+  background-size: 400% 100%;
+  animation: skeleton-loading 1.4s ease infinite;
+  border-radius: var(--radius-sm);
+}
+@keyframes skeleton-loading {
+  0% { background-position: 100% 50%; }
+  100% { background-position: 0 50%; }
+}
+
+/* ---------- 分割与留白 ---------- */
+.divider { height: 2rpx; background: var(--line); margin: 20rpx 0; }
+.gap-block { height: 20rpx; background: var(--bg); }
+.safe-bottom { height: env(safe-area-inset-bottom); }
+
+/* ---------- 加载更多 ---------- */
+.load-more {
+  text-align: center;
+  color: var(--ink-3);
+  font-size: 24rpx;
+  padding: 32rpx 0;
+}

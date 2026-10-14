@@ -1,0 +1,56 @@
+<view class="page">
+  <view wx:if="{{list.length}}" class="head">
+    <text class="t-sm t-muted">共 {{list.length}} 种商品</text>
+    <text class="head-edit" bindtap="toggleEdit">{{editing ? '完成' : '管理'}}</text>
+  </view>
+
+  <scroll-view scroll-y class="scroll" wx:if="{{list.length}}">
+    <view class="items">
+      <view wx:for="{{list}}" wx:key="productId" class="item">
+        <view class="item-check {{item.selected ? 'checked' : ''}}"
+          bindtap="onToggle" data-id="{{item.productId}}"></view>
+
+        <view class="item-img" bindtap="goDetail" data-id="{{item.productId}}">
+          <image wx:if="{{item.cover}}" src="{{item.cover}}" mode="aspectFill" />
+          <view wx:else class="item-img-ph">🌸</view>
+        </view>
+
+        <view class="item-body">
+          <view class="item-name ellipsis-2" bindtap="goDetail" data-id="{{item.productId}}">{{item.name}}</view>
+          <view wx:if="{{item.lowStock}}" class="t-sm" style="color: var(--warn);">{{item.stockText}}</view>
+          <view class="item-foot">
+            <text class="price item-price">{{item.priceText}}</text>
+            <step-counter value="{{item.quantity}}" max="{{item.maxQty}}"
+              data-id="{{item.productId}}" bind:change="onQtyChange" bind:overflow="onQtyOverflow" />
+          </view>
+        </view>
+
+        <view wx:if="{{editing}}" class="item-del" bindtap="onRemove" data-id="{{item.productId}}">删除</view>
+      </view>
+    </view>
+
+    <view class="tip-card">
+      <text class="t-sm t-muted">💡 {{freeTip}}</text>
+    </view>
+    <view class="bottom-placeholder"></view>
+  </scroll-view>
+
+  <empty-state wx:else icon="🛒" text="购物车还是空的"
+    hint="挑一束花，送给想送的人" btn-text="去逛逛" bind:action="goHome" />
+
+  <view wx:if="{{list.length}}" class="bottom-bar">
+    <view class="bar-check {{allSelected ? 'checked' : ''}}" bindtap="onSelectAll"></view>
+    <text class="t-md" bindtap="onSelectAll">全选</text>
+    <view class="flex-1 bar-total">
+      <text wx:if="{{!editing}}" class="t-sm t-sub">合计 </text>
+      <text wx:if="{{!editing}}" class="price bar-price">{{totalText}}</text>
+      <text wx:if="{{!editing && deliveryFee > 0}}" class="t-sm t-muted bar-fee">+运费 ¥{{deliveryFeeText}}</text>
+    </view>
+    <button wx:if="{{editing}}" class="btn btn-plain btn-sm" bindtap="onRemoveSelected">
+      删除({{selectedCount}})
+    </button>
+    <button wx:else class="btn btn-primary bar-btn" bindtap="goCheckout" disabled="{{!selectedCount}}">
+      结算({{selectedCount}})
+    </button>
+  </view>
+</view>

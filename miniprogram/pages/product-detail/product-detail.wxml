@@ -1,0 +1,145 @@
+<view class="page" wx:if="{{product}}">
+  <scroll-view scroll-y class="scroll">
+    <!-- 图集 -->
+    <swiper wx:if="{{product.images.length}}" class="gallery" indicator-dots
+      indicator-active-color="#c2185b" circular>
+      <swiper-item wx:for="{{product.images}}" wx:key="*this">
+        <image src="{{item}}" mode="aspectFill" class="gallery-img" bindtap="preview" data-url="{{item}}" />
+      </swiper-item>
+    </swiper>
+    <view wx:else class="gallery gallery-ph">🌸</view>
+
+    <!-- 价格区 -->
+    <view class="head">
+      <view class="head-price">
+        <text class="price head-price-main">{{priceText}}</text>
+        <text wx:if="{{product.hasMemberPrice}}" class="tag head-vip">会员 {{discountText}}</text>
+        <text wx:if="{{product.originalPrice > product.price}}" class="price-origin">¥{{originalText}}</text>
+        <text class="head-unit">/{{product.unit}}</text>
+      </view>
+      <view class="head-name">{{product.name}}</view>
+      <view wx:if="{{product.subtitle}}" class="head-sub">{{product.subtitle}}</view>
+      <view class="head-meta">
+        <text class="t-sm t-muted">已售 {{product.sales}}</text>
+        <text class="t-sm t-muted">库存 {{product.stock}}</text>
+        <text wx:if="{{product.flowerLanguage}}" class="t-sm t-rose">花语：{{product.flowerLanguage}}</text>
+      </view>
+      <view wx:if="{{product.tags.length}}" class="head-tags">
+        <text wx:for="{{product.tags}}" wx:key="*this" class="tag">{{item}}</text>
+      </view>
+    </view>
+
+    <!-- 配送信息 -->
+    <view class="card info">
+      <view class="info-row" bindtap="goShop">
+        <text class="info-label">配送</text>
+        <view class="flex-1">
+          <text class="t-md">{{shop.deliveryRange || '同城配送'}}</text>
+          <text class="t-sm t-muted info-fee">
+            满 {{freeThresholdText}} 元免配送费，不满收 {{deliveryFeeText}} 元
+          </text>
+        </view>
+        <text class="info-arrow">›</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">自提</text>
+        <view class="flex-1">
+          <text class="t-md">{{shop.address || '到店自提'}}</text>
+          <text class="t-sm t-muted info-fee">{{shop.openTime}} - {{shop.closeTime}} 营业</text>
+        </view>
+      </view>
+      <view wx:if="{{product.notice}}" class="info-row">
+        <text class="info-label">提示</text>
+        <text class="flex-1 t-md t-sub">{{product.notice}}</text>
+      </view>
+    </view>
+
+    <!-- 花材详情 -->
+    <view class="card">
+      <view class="detail-title">花材配置</view>
+      <view wx:if="{{product.material}}" class="detail-row">
+        <text class="detail-key">花材</text>
+        <text class="detail-val">{{product.material}}</text>
+      </view>
+      <view wx:if="{{product.packaging}}" class="detail-row">
+        <text class="detail-key">包装</text>
+        <text class="detail-val">{{product.packaging}}</text>
+      </view>
+      <view wx:if="{{product.description}}" class="detail-desc">{{product.description}}</view>
+    </view>
+
+    <!-- 相关推荐 -->
+    <view wx:if="{{related.length}}">
+      <view class="section-title">同类好花</view>
+      <view class="related">
+        <view wx:for="{{related}}" wx:key="_id" class="related-item">
+          <product-card product="{{item}}" show-add="{{false}}" />
+        </view>
+      </view>
+    </view>
+
+    <view class="bottom-placeholder"></view>
+  </scroll-view>
+
+  <!-- 底部操作 -->
+  <view class="bottom-bar">
+    <view class="bar-icon" bindtap="goCart">
+      <text class="bar-icon-emoji">🛒</text>
+      <text class="bar-icon-text">购物车</text>
+      <view wx:if="{{cartCount}}" class="bar-badge">{{cartCount}}</view>
+    </view>
+    <view class="bar-icon" bindtap="goReservation">
+      <text class="bar-icon-emoji">📅</text>
+      <text class="bar-icon-text">预约</text>
+    </view>
+    <button class="btn btn-ghost flex-1" bindtap="openSku" data-mode="cart"
+      disabled="{{product.stock <= 0}}">加入购物车</button>
+    <button class="btn btn-primary flex-1" bindtap="openSku" data-mode="buy"
+      disabled="{{product.stock <= 0}}">{{buyText}}</button>
+  </view>
+
+  <!-- 规格弹层 -->
+  <view wx:if="{{skuVisible}}" class="mask" bindtap="closeSku" catchtouchmove="noop">
+    <view class="sku" catchtap="noop">
+      <view class="sku-head">
+        <image wx:if="{{product.cover}}" src="{{product.cover}}" mode="aspectFill" class="sku-img" />
+        <view wx:else class="sku-img sku-img-ph">🌸</view>
+        <view class="flex-1">
+          <text class="price sku-price">{{priceText}}</text>
+          <view class="t-sm t-muted sku-stock">库存 {{product.stock}} {{product.unit}}</view>
+        </view>
+        <text class="sku-close" bindtap="closeSku">✕</text>
+      </view>
+      <view class="sku-row">
+        <text class="t-md">购买数量</text>
+        <step-counter value="{{quantity}}" max="{{maxQty}}" bind:change="onQtyChange"
+          bind:overflow="onQtyOverflow" />
+      </view>
+      <view class="sku-row sku-card-row">
+        <text class="t-md">贺卡寄语</text>
+        <input class="input sku-input" placeholder="选填，最多 40 字" maxlength="40"
+          value="{{greetingCard}}" bindinput="onCardInput" />
+      </view>
+      <view class="sku-total">
+        <text class="t-md t-sub">合计</text>
+        <text class="price sku-total-price">{{totalText}}</text>
+      </view>
+      <button class="btn btn-primary sku-btn" bindtap="confirmSku">
+        {{skuMode === 'buy' ? '立即结算' : '加入购物车'}}
+      </button>
+      <view class="safe-bottom"></view>
+    </view>
+  </view>
+</view>
+
+<view wx:elif="{{loading}}" class="loading-wrap">
+  <view class="skeleton" style="height: 560rpx;"></view>
+  <view class="skeleton" style="height: 60rpx; margin: 24rpx;"></view>
+  <view class="skeleton" style="height: 200rpx; margin: 24rpx;"></view>
+</view>
+
+<view wx:else class="loading-wrap">
+  <view class="empty-icon">🥀</view>
+  <view class="t-sub">商品不存在或已下架</view>
+  <button class="btn btn-outline btn-sm" style="margin-top: 32rpx;" bindtap="goHome">回首页看看</button>
+</view>

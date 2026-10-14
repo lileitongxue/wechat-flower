@@ -1,0 +1,58 @@
+<view class="page">
+  <scroll-view scroll-y class="scroll">
+    <view class="hero">
+      <view class="hero-icon">💐</view>
+      <view class="hero-name">{{shop.name}}</view>
+      <view class="hero-time">营业时间 {{shop.openTime}} - {{shop.closeTime}}</view>
+    </view>
+
+    <view class="card card-tight">
+      <view class="cell" bindtap="openMap">
+        <text class="cell-icon">📍</text>
+        <view class="flex-1">
+          <view class="t-md">{{shop.address}}</view>
+          <view class="t-sm t-muted">点击查看地图导航</view>
+        </view>
+        <text class="t-sm t-rose">导航</text>
+      </view>
+      <view class="cell" bindtap="callShop">
+        <text class="cell-icon">☎️</text>
+        <view class="flex-1">
+          <view class="t-md">{{shop.phone}}</view>
+          <view class="t-sm t-muted">有疑问欢迎来电</view>
+        </view>
+        <text class="t-sm t-rose">拨打</text>
+      </view>
+    </view>
+
+    <view class="section-title">配送说明</view>
+    <view class="card">
+      <view class="info-row">
+        <text class="info-key">配送范围</text>
+        <text class="info-val">{{shop.deliveryRange || '同城配送'}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-key">配送费</text>
+        <text class="info-val">¥{{feeText}}（满 ¥{{thresholdText}} 免配送费）</text>
+      </view>
+      <view class="info-row">
+        <text class="info-key">自提时段</text>
+        <text class="info-val">{{timeRangeText}}</text>
+      </view>
+      <view wx:if="{{shop.notice}}" class="info-row">
+        <text class="info-key">温馨提示</text>
+        <text class="info-val">{{shop.notice}}</text>
+      </view>
+    </view>
+
+    <view class="section-title">售后说明</view>
+    <view class="card rules">
+      <view class="rule">· 鲜花属于定制类商品，制作后非质量问题不支持无理由退换</view>
+      <view class="rule">· 收到花材如有破损、错品，请在 2 小时内拍照联系客服</view>
+      <view class="rule">· 配送失败（地址有误、无人接收）需重新支付配送费</view>
+      <view class="rule">· 预约订单在交付日前 3 天以上取消可全额退定金</view>
+    </view>
+
+    <view class="safe-bottom"></view>
+  </scroll-view>
+</view>

@@ -1,0 +1,9 @@
+{
+  "name": "reservation",
+  "version": "1.0.0",
+  "description": "预约订花",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

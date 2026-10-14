@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "商品详情",
+  "usingComponents": {
+    "product-card": "/components/product-card/product-card",
+    "step-counter": "/components/step-counter/step-counter"
+  }
+}

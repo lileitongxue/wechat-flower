@@ -1,0 +1,102 @@
+<view class="page">
+  <!-- 自定义导航：沉浸式顶部 -->
+  <view class="nav" style="padding-top: {{statusBarHeight}}px">
+    <view class="nav-bar" style="height: {{navBarHeight}}px">
+      <text class="nav-logo">花知道</text>
+      <view class="nav-search" bindtap="goSearch">
+        <text class="nav-search-icon">🔍</text>
+        <text class="nav-search-ph">搜索玫瑰、康乃馨…</text>
+      </view>
+    </view>
+  </view>
+
+  <scroll-view scroll-y class="scroll" style="padding-top: {{statusBarHeight + navBarHeight}}px">
+    <!-- 轮播 -->
+    <swiper wx:if="{{banners.length}}" class="banner" indicator-dots indicator-color="rgba(255,255,255,.4)"
+      indicator-active-color="#fff" autoplay circular interval="4000">
+      <swiper-item wx:for="{{banners}}" wx:key="index" bindtap="onBanner" data-link="{{item.link}}">
+        <image wx:if="{{item.image}}" src="{{item.image}}" mode="aspectFill" class="banner-img" />
+        <view wx:else class="banner-ph">
+          <text class="banner-ph-title">{{item.title}}</text>
+        </view>
+      </swiper-item>
+    </swiper>
+    <view wx:elif="{{loading}}" class="banner skeleton"></view>
+
+    <!-- 快捷入口 -->
+    <view class="quick card">
+      <view class="quick-item" bindtap="goReservation">
+        <view class="quick-icon quick-icon-rose">📅</view>
+        <text class="quick-text">预约订花</text>
+      </view>
+      <view class="quick-item" bindtap="goCoupon">
+        <view class="quick-icon quick-icon-warn">🎟</view>
+        <text class="quick-text">领券中心</text>
+      </view>
+      <view class="quick-item" bindtap="goMember">
+        <view class="quick-icon quick-icon-gold">👑</view>
+        <text class="quick-text">会员中心</text>
+      </view>
+      <view class="quick-item" bindtap="goShop">
+        <view class="quick-icon quick-icon-green">📍</view>
+        <text class="quick-text">到店自提</text>
+      </view>
+    </view>
+
+    <!-- 公告 -->
+    <view wx:if="{{shop.notice}}" class="notice">
+      <text class="notice-tag">公告</text>
+      <text class="notice-text ellipsis">{{shop.notice}}</text>
+    </view>
+
+    <!-- 分类导航 -->
+    <view wx:if="{{categories.length}}" class="cats">
+      <view wx:for="{{categories}}" wx:key="_id" class="cat-item"
+        bindtap="goCategory" data-id="{{item._id}}">
+        <view class="cat-icon">{{item.icon || '🌼'}}</view>
+        <text class="cat-name ellipsis">{{item.name}}</text>
+      </view>
+    </view>
+
+    <!-- 热销 -->
+    <view wx:if="{{hot.length}}">
+      <view class="section-title">
+        热销推荐
+        <text class="section-more" bindtap="goCategory" data-id="">全部 ›</text>
+      </view>
+      <scroll-view scroll-x class="hot-scroll" enhanced show-scrollbar="{{false}}">
+        <view class="hot-inner">
+          <view wx:for="{{hot}}" wx:key="_id" class="hot-item">
+            <product-card product="{{item}}" bind:add="onAdd" />
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 新品：双列瀑布 -->
+    <view wx:if="{{newest.length}}">
+      <view class="section-title">上新到店</view>
+      <view class="grid">
+        <view wx:for="{{newest}}" wx:key="_id" class="grid-item">
+          <product-card product="{{item}}" bind:add="onAdd" />
+        </view>
+      </view>
+    </view>
+
+    <!-- 首屏骨架 -->
+    <view wx:if="{{loading}}" class="grid">
+      <view wx:for="{{[1,2,3,4]}}" wx:key="*this" class="grid-item">
+        <view class="skeleton" style="height: 420rpx; border-radius: 20rpx;"></view>
+      </view>
+    </view>
+
+    <view wx:if="{{!loading && !hot.length && !newest.length}}" class="empty-wrap">
+      <view class="empty-icon">🌱</view>
+      <view class="empty-text">店铺还没有上架商品</view>
+      <view class="empty-hint">管理员可在「我的 → 商家管理」中初始化示例数据</view>
+    </view>
+
+    <view class="foot-tip" wx:if="{{!loading}}">—— 鲜花易逝，爱意长存 ——</view>
+    <view class="safe-bottom"></view>
+  </scroll-view>
+</view>

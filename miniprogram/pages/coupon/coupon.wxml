@@ -1,0 +1,51 @@
+<view class="page">
+  <view class="tabs">
+    <view wx:for="{{tabs}}" wx:key="key" class="tab {{tab === item.key ? 'active' : ''}}"
+      bindtap="onTab" data-key="{{item.key}}">{{item.label}}</view>
+  </view>
+
+  <scroll-view scroll-y class="scroll">
+    <view class="wrap">
+      <!-- 领券中心 -->
+      <block wx:if="{{tab === 'center'}}">
+        <view wx:for="{{center}}" wx:key="_id" class="cp {{item.claimed ? 'used' : ''}}">
+          <view class="cp-left">
+            <text class="cp-value">{{item.valueText}}</text>
+            <text class="cp-threshold">{{item.thresholdText}}</text>
+          </view>
+          <view class="cp-body">
+            <view class="cp-name">{{item.name}}</view>
+            <view class="t-sm t-muted">{{item.remain != null ? '剩余 ' + item.remain + ' 张' : '不限量'}}</view>
+          </view>
+          <button class="btn btn-sm {{item.claimed ? 'btn-plain' : 'btn-primary'}} cp-btn"
+            bindtap="onClaim" data-id="{{item._id}}" disabled="{{item.claimed}}">
+            {{item.claimed ? '已领取' : '领取'}}
+          </button>
+        </view>
+        <empty-state wx:if="{{!center.length && !loading}}" icon="🎟" text="暂无可领取的券"
+          hint="关注店铺动态，活动随时上线" />
+      </block>
+
+      <!-- 我的券 -->
+      <block wx:else>
+        <view wx:for="{{list}}" wx:key="_id" class="cp {{tab !== 'unused' ? 'used' : ''}}">
+          <view class="cp-left">
+            <text class="cp-value">{{item.valueText}}</text>
+            <text class="cp-threshold">{{item.thresholdText}}</text>
+          </view>
+          <view class="cp-body">
+            <view class="cp-name">{{item.name}}</view>
+            <view class="t-sm t-muted">{{item.expireText}}</view>
+          </view>
+          <view wx:if="{{tab === 'unused'}}" class="cp-use" bindtap="goShopping">去使用</view>
+          <view wx:else class="cp-stamp">{{item.status === 'used' ? '已使用' : '已过期'}}</view>
+        </view>
+        <empty-state wx:if="{{!list.length && !loading}}" icon="🎫"
+          text="{{tab === 'unused' ? '暂无可用优惠券' : '没有相关记录'}}"
+          hint="{{tab === 'unused' ? '去领券中心看看吧' : ''}}"
+          btn-text="{{tab === 'unused' ? '去领券' : ''}}" bind:action="goCenter" />
+      </block>
+    </view>
+    <view class="safe-bottom"></view>
+  </scroll-view>
+</view>

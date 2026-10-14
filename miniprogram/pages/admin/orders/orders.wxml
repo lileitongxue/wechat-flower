@@ -1,0 +1,58 @@
+<view class="page">
+  <view class="filters">
+    <view class="search">
+      <input class="flex-1" placeholder="搜索订单号 / 收货人 / 手机号" value="{{keyword}}"
+        confirm-type="search" bindinput="onKeyword" bindconfirm="onSearch" />
+      <text wx:if="{{keyword}}" class="search-clear" bindtap="onClearKeyword">✕</text>
+    </view>
+    <scroll-view scroll-x class="tabs" enhanced show-scrollbar="{{false}}">
+      <view class="tabs-inner">
+        <view wx:for="{{tabs}}" wx:key="key"
+          class="tab {{status === item.key ? 'active' : ''}}"
+          bindtap="onTab" data-key="{{item.key}}">{{item.label}}</view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <scroll-view scroll-y class="scroll" bindscrolltolower="loadMore">
+    <view class="wrap">
+      <view wx:for="{{list}}" wx:key="_id" class="o" bindtap="goDetail" data-id="{{item._id}}">
+        <view class="o-head">
+          <text class="o-no">{{item.orderNo}}</text>
+          <text class="o-status {{item.statusClass}}">{{item.statusText}}</text>
+        </view>
+
+        <view class="o-info">
+          <text class="o-type">{{item.deliveryType === 'pickup' ? '🏪 自提' : '🚚 配送'}}</text>
+          <text class="t-sm t-sub">{{item.contactName}} {{item.contactPhone}}</text>
+        </view>
+        <view wx:if="{{item.addressText}}" class="t-sm t-muted o-addr ellipsis">{{item.addressText}}</view>
+        <view wx:if="{{item.pickupTime}}" class="t-sm t-rose">自提时间：{{item.pickupTime}}</view>
+
+        <view class="o-goods">
+          <text wx:for="{{item.items}}" wx:for-item="g" wx:key="productId" class="t-sm t-sub o-good">
+            {{g.name}} ×{{g.quantity}}
+          </text>
+        </view>
+
+        <view class="o-foot">
+          <text class="t-sm t-muted">{{item.createdAtText}}</text>
+          <text class="price o-total">{{item.totalText}}</text>
+        </view>
+
+        <view wx:if="{{item.nextActions.length}}" class="o-actions">
+          <button wx:for="{{item.nextActions}}" wx:for-item="act" wx:key="status"
+            class="btn btn-sm {{act.primary ? 'btn-primary' : 'btn-plain'}}"
+            catchtap="onAction" data-id="{{item._id}}" data-status="{{act.status}}"
+            data-label="{{act.label}}">{{act.label}}</button>
+        </view>
+      </view>
+
+      <empty-state wx:if="{{!list.length && !loading}}" icon="📋" text="没有相关订单" />
+      <view wx:if="{{list.length}}" class="load-more">
+        {{ hasMore ? (loading ? '加载中…' : '上拉加载更多') : '— 共 ' + total + ' 笔订单 —' }}
+      </view>
+    </view>
+    <view class="safe-bottom"></view>
+  </scroll-view>
+</view>

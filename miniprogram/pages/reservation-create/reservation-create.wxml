@@ -1,0 +1,148 @@
+<view class="page">
+  <scroll-view scroll-y class="scroll">
+    <view class="banner">
+      <view class="banner-title">🗓 节日预约订花</view>
+      <view class="banner-sub">提前预订，节日当天准时送达；热门节日花材紧俏，建议提前 7 天</view>
+    </view>
+
+    <!-- 选择商品 -->
+    <view class="section-title">选择花材</view>
+    <view wx:if="{{picked.length}}" class="card card-tight">
+      <view wx:for="{{picked}}" wx:key="productId" class="pick-item">
+        <view class="pick-img">
+          <image wx:if="{{item.cover}}" src="{{item.cover}}" mode="aspectFill" />
+          <view wx:else class="pick-img-ph">🌸</view>
+        </view>
+        <view class="flex-1">
+          <view class="pick-name ellipsis-2">{{item.name}}</view>
+          <text class="price">{{item.priceText}}</text>
+        </view>
+        <view class="pick-ops">
+          <step-counter value="{{item.quantity}}" max="99"
+            data-id="{{item.productId}}" bind:change="onQtyChange" />
+          <text class="pick-del" bindtap="onRemovePick" data-id="{{item.productId}}">移除</text>
+        </view>
+      </view>
+    </view>
+    <view class="add-product card" bindtap="openPicker">
+      <text class="t-md t-rose">+ {{picked.length ? '继续添加花材' : '点击选择花材'}}</text>
+    </view>
+
+    <!-- 交付时间 -->
+    <view class="section-title">交付日期</view>
+    <scroll-view scroll-x class="dates" enhanced show-scrollbar="{{false}}">
+      <view class="dates-inner">
+        <view wx:for="{{slots}}" wx:key="date"
+          class="date {{deliveryDate === item.date ? 'active' : ''}} {{item.busy ? 'busy' : ''}}"
+          bindtap="onPickDate" data-date="{{item.date}}">
+          <text class="date-day">{{item.dayText}}</text>
+          <text class="date-week">周{{item.weekday}}</text>
+          <text wx:if="{{item.festival}}" class="date-festival">{{item.festival}}</text>
+        </view>
+      </view>
+    </scroll-view>
+
+    <view class="card card-tight">
+      <view class="f-row">
+        <text class="f-label">送达时段</text>
+        <picker range="{{timeRanges}}" value="{{timeIndex}}" bindchange="onTimeChange">
+          <view class="f-picker">{{timeRanges[timeIndex] || '请选择'}} ›</view>
+        </picker>
+      </view>
+      <view class="f-row">
+        <text class="f-label">交付方式</text>
+        <view class="seg">
+          <text class="seg-item {{deliveryType === 'delivery' ? 'active' : ''}}"
+            bindtap="onType" data-type="delivery">配送</text>
+          <text class="seg-item {{deliveryType === 'pickup' ? 'active' : ''}}"
+            bindtap="onType" data-type="pickup">自提</text>
+        </view>
+      </view>
+      <view wx:if="{{deliveryType === 'delivery'}}" class="f-row" bindtap="goAddress">
+        <text class="f-label">收货地址</text>
+        <text class="f-value {{address ? '' : 't-muted'}}">
+          {{address ? address.name + ' ' + address.phone : '请选择'}}
+        </text>
+        <text class="f-arrow">›</text>
+      </view>
+      <view wx:if="{{deliveryType === 'delivery' && address}}" class="f-row">
+        <text class="f-label"></text>
+        <text class="f-value t-sm t-muted">{{address.province}}{{address.city}}{{address.district}}{{address.detail}}</text>
+      </view>
+      <view wx:if="{{deliveryType === 'pickup'}}" class="f-row">
+        <text class="f-label">联系电话</text>
+        <input class="f-input" type="number" maxlength="11" placeholder="便于门店联系"
+          value="{{contactPhone}}" bindinput="onPhoneInput" />
+      </view>
+      <view class="f-row">
+        <text class="f-label">贺卡寄语</text>
+        <input class="f-input" maxlength="40" placeholder="写给 TA 的话（选填）"
+          value="{{greetingCard}}" bindinput="onCardInput" />
+      </view>
+      <view class="f-row">
+        <text class="f-label">特殊要求</text>
+        <input class="f-input" maxlength="60" placeholder="如花材偏好、包装色系（选填）"
+          value="{{remark}}" bindinput="onRemarkInput" />
+      </view>
+    </view>
+
+    <!-- 支付方式 -->
+    <view class="section-title">支付方式</view>
+    <view class="card card-tight">
+      <view class="pay-opt {{payMode === 'deposit' ? 'active' : ''}}" bindtap="onPayMode" data-mode="deposit">
+        <view class="flex-1">
+          <view class="t-md t-bold">支付定金（30%）</view>
+          <view class="t-sm t-muted">交付前补齐尾款，灵活省心</view>
+        </view>
+        <text class="price pay-amount">{{depositText}}</text>
+      </view>
+      <view class="pay-opt {{payMode === 'full' ? 'active' : ''}}" bindtap="onPayMode" data-mode="full">
+        <view class="flex-1">
+          <view class="t-md t-bold">支付全款</view>
+          <view class="t-sm t-muted">一次付清，交付当天无需操作</view>
+        </view>
+        <text class="price pay-amount">{{totalText}}</text>
+      </view>
+    </view>
+
+    <view class="agree">预约单提交后商家将在 24 小时内确认排期；交付日前 3 天以上取消可全额退定金</view>
+    <view class="bottom-placeholder"></view>
+  </scroll-view>
+
+  <view class="bottom-bar">
+    <view class="flex-1">
+      <text class="t-sm t-sub">{{payMode === 'full' ? '应付全款' : '应付定金'}} </text>
+      <text class="price bar-price">{{payMode === 'full' ? totalText : depositText}}</text>
+      <text wx:if="{{payMode === 'deposit'}}" class="t-sm t-muted bar-sub">总价 ¥{{totalText}}</text>
+    </view>
+    <button class="btn btn-primary bar-btn" bindtap="submit" disabled="{{submitting}}">
+      {{submitting ? '提交中…' : '提交预约'}}
+    </button>
+  </view>
+
+  <!-- 花材选择弹层 -->
+  <view wx:if="{{pickerVisible}}" class="mask" bindtap="closePicker" catchtouchmove="noop">
+    <view class="sheet" catchtap="noop">
+      <view class="sheet-head">
+        <text class="t-lg t-bold">选择花材</text>
+        <text class="sheet-close" bindtap="closePicker">✕</text>
+      </view>
+      <scroll-view scroll-y class="sheet-body" bindscrolltolower="loadMoreProducts">
+        <view wx:for="{{products}}" wx:key="_id" class="prod" bindtap="onAddPick" data-index="{{index}}">
+          <view class="prod-img">
+            <image wx:if="{{item.cover}}" src="{{item.cover}}" mode="aspectFill" />
+            <view wx:else class="prod-img-ph">🌸</view>
+          </view>
+          <view class="flex-1">
+            <view class="prod-name ellipsis">{{item.name}}</view>
+            <view class="t-sm t-muted ellipsis">{{item.subtitle}}</view>
+            <text class="price">{{item.priceText}}</text>
+          </view>
+          <text class="prod-add">+</text>
+        </view>
+        <view wx:if="{{!products.length}}" class="sheet-empty">暂无可预约花材</view>
+      </scroll-view>
+      <view class="safe-bottom"></view>
+    </view>
+  </view>
+</view>

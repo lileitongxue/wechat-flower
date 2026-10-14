@@ -1,0 +1,134 @@
+<view class="page">
+  <scroll-view scroll-y class="scroll">
+    <!-- 图片 -->
+    <view class="section-title">商品图片</view>
+    <view class="card">
+      <view class="imgs">
+        <view wx:for="{{form.images}}" wx:key="*this" class="img-item">
+          <image src="{{item}}" mode="aspectFill" bindtap="previewImg" data-url="{{item}}" />
+          <text class="img-del" catchtap="removeImg" data-index="{{index}}">✕</text>
+          <text wx:if="{{index === 0}}" class="img-cover">封面</text>
+        </view>
+        <view wx:if="{{form.images.length < 9}}" class="img-add" bindtap="chooseImg">
+          <text class="img-add-icon">＋</text>
+          <text class="img-add-text">{{form.images.length}}/9</text>
+        </view>
+      </view>
+      <view class="t-sm t-muted" style="margin-top: 16rpx;">第一张作为封面图，建议 1:1 比例</view>
+    </view>
+
+    <!-- 基础信息 -->
+    <view class="section-title">基础信息</view>
+    <view class="card card-tight">
+      <view class="f-row">
+        <text class="f-label">商品名称</text>
+        <input class="f-input" placeholder="如：挚爱 · 99 朵红玫瑰" maxlength="50"
+          value="{{form.name}}" bindinput="onInput" data-field="name" />
+      </view>
+      <view class="f-row">
+        <text class="f-label">副标题</text>
+        <input class="f-input" placeholder="一句话卖点（选填）" maxlength="60"
+          value="{{form.subtitle}}" bindinput="onInput" data-field="subtitle" />
+      </view>
+      <view class="f-row">
+        <text class="f-label">所属分类</text>
+        <picker range="{{categoryNames}}" value="{{categoryIndex}}" bindchange="onCategory">
+          <view class="f-picker">{{categoryNames[categoryIndex] || '请选择'}} ›</view>
+        </picker>
+      </view>
+      <view class="f-row">
+        <text class="f-label">售价（元）</text>
+        <input class="f-input" type="digit" placeholder="0.00"
+          value="{{form.priceYuan}}" bindinput="onInput" data-field="priceYuan" />
+      </view>
+      <view class="f-row">
+        <text class="f-label">划线价（元）</text>
+        <input class="f-input" type="digit" placeholder="选填，用于展示折扣"
+          value="{{form.originalPriceYuan}}" bindinput="onInput" data-field="originalPriceYuan" />
+      </view>
+      <view class="f-row">
+        <text class="f-label">库存</text>
+        <input class="f-input" type="number" placeholder="0"
+          value="{{form.stock}}" bindinput="onInput" data-field="stock" />
+      </view>
+      <view class="f-row">
+        <text class="f-label">单位</text>
+        <input class="f-input" placeholder="束 / 盒 / 盆" maxlength="6"
+          value="{{form.unit}}" bindinput="onInput" data-field="unit" />
+      </view>
+      <view class="f-row">
+        <text class="f-label">排序权重</text>
+        <input class="f-input" type="number" placeholder="数字越小越靠前"
+          value="{{form.sort}}" bindinput="onInput" data-field="sort" />
+      </view>
+    </view>
+
+    <!-- 花材详情 -->
+    <view class="section-title">花材详情</view>
+    <view class="card card-tight">
+      <view class="f-row">
+        <text class="f-label">花材配置</text>
+        <input class="f-input" placeholder="如：红玫瑰 99 枝、尤加利叶" maxlength="200"
+          value="{{form.material}}" bindinput="onInput" data-field="material" />
+      </view>
+      <view class="f-row">
+        <text class="f-label">包装</text>
+        <input class="f-input" placeholder="如：哑光雾面纸 + 丝带" maxlength="100"
+          value="{{form.packaging}}" bindinput="onInput" data-field="packaging" />
+      </view>
+      <view class="f-row">
+        <text class="f-label">花语</text>
+        <input class="f-input" placeholder="如：长长久久" maxlength="100"
+          value="{{form.flowerLanguage}}" bindinput="onInput" data-field="flowerLanguage" />
+      </view>
+      <view class="f-row">
+        <text class="f-label">标签</text>
+        <input class="f-input" placeholder="逗号分隔，如：热销,告白" maxlength="60"
+          value="{{tagsText}}" bindinput="onTags" />
+      </view>
+      <view class="f-row f-row-area">
+        <text class="f-label">商品描述</text>
+        <textarea class="f-textarea" placeholder="详细介绍这束花（选填）" maxlength="1000"
+          value="{{form.description}}" bindinput="onInput" data-field="description" auto-height />
+      </view>
+      <view class="f-row">
+        <text class="f-label">购买提示</text>
+        <input class="f-input" placeholder="如：需提前 1 天预约" maxlength="200"
+          value="{{form.notice}}" bindinput="onInput" data-field="notice" />
+      </view>
+    </view>
+
+    <!-- 开关 -->
+    <view class="card card-tight">
+      <view class="f-row">
+        <view class="flex-1">
+          <view class="t-md">立即上架</view>
+          <view class="t-sm t-muted">关闭后仅在管理端可见</view>
+        </view>
+        <switch checked="{{form.status === 'on'}}" color="#c2185b" bindchange="onStatusChange" />
+      </view>
+      <view class="f-row">
+        <view class="flex-1">
+          <view class="t-md">设为热销推荐</view>
+          <view class="t-sm t-muted">在首页热销位展示</view>
+        </view>
+        <switch checked="{{form.isHot}}" color="#c2185b" bindchange="onHotChange" />
+      </view>
+      <view class="f-row">
+        <view class="flex-1">
+          <view class="t-md">支持预约</view>
+          <view class="t-sm t-muted">允许顾客提前预订</view>
+        </view>
+        <switch checked="{{form.supportReservation}}" color="#c2185b" bindchange="onReservationChange" />
+      </view>
+    </view>
+
+    <view class="bottom-placeholder"></view>
+  </scroll-view>
+
+  <view class="bottom-bar">
+    <button class="btn btn-primary flex-1" bindtap="onSave" disabled="{{saving}}">
+      {{saving ? '保存中…' : (form.productId ? '保存修改' : '确认上架')}}
+    </button>
+  </view>
+</view>

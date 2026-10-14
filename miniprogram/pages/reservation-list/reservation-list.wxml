@@ -1,0 +1,61 @@
+<view class="page">
+  <view class="tabs">
+    <view wx:for="{{tabs}}" wx:key="key" class="tab {{status === item.key ? 'active' : ''}}"
+      bindtap="onTab" data-key="{{item.key}}">{{item.label}}</view>
+  </view>
+
+  <scroll-view scroll-y class="scroll">
+    <view class="wrap">
+      <view wx:for="{{list}}" wx:key="_id" class="rs">
+        <view class="rs-head">
+          <view class="rs-date">
+            <text class="rs-date-main">{{item.dateText}}</text>
+            <text class="rs-date-sub">{{item.deliveryTime}}</text>
+          </view>
+          <view class="rs-status {{item.status}}">{{item.statusText}}</view>
+        </view>
+
+        <view wx:if="{{item.daysLeft >= 0 && item.status !== 'cancelled' && item.status !== 'fulfilled'}}"
+          class="rs-countdown">
+          {{item.daysLeft === 0 ? '🌹 今天交付' : '距交付还有 ' + item.daysLeft + ' 天'}}
+        </view>
+
+        <view class="rs-goods">
+          <view wx:for="{{item.items}}" wx:for-item="g" wx:key="productId" class="rs-good">
+            <view class="rs-img">
+              <image wx:if="{{g.cover}}" src="{{g.cover}}" mode="aspectFill" />
+              <view wx:else class="rs-img-ph">🌸</view>
+            </view>
+            <view class="flex-1">
+              <view class="t-md ellipsis">{{g.name}}</view>
+              <view class="t-sm t-muted">× {{g.quantity}}</view>
+            </view>
+          </view>
+        </view>
+
+        <view class="rs-foot">
+          <view class="t-sm t-muted">{{item.deliveryTypeText}} · 共 {{item.itemCount}} 件</view>
+          <view>
+            <text class="t-sm t-sub">总价 </text>
+            <text class="price">{{item.totalText}}</text>
+            <text class="t-sm t-muted rs-deposit">定金 ¥{{item.depositText}}</text>
+          </view>
+        </view>
+
+        <view class="rs-actions">
+          <button wx:if="{{item.canCancel}}" class="btn btn-plain btn-sm"
+            bindtap="onCancel" data-id="{{item._id}}">取消预约</button>
+          <button class="btn btn-outline btn-sm" bindtap="onDetail" data-id="{{item._id}}">查看详情</button>
+        </view>
+      </view>
+
+      <empty-state wx:if="{{!list.length && !loading}}" icon="📅" text="还没有预约单"
+        hint="节日花材紧俏，提前预约更安心" btn-text="去预约" bind:action="goCreate" />
+    </view>
+    <view class="bottom-placeholder"></view>
+  </scroll-view>
+
+  <view class="bottom-bar">
+    <button class="btn btn-primary flex-1" bindtap="goCreate">+ 新建预约</button>
+  </view>
+</view>

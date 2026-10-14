@@ -1,0 +1,133 @@
+<view class="page">
+  <scroll-view scroll-y class="scroll">
+    <!-- 用户头部 -->
+    <view class="header" style="padding-top: {{statusBarHeight + 20}}px">
+      <view class="profile">
+        <button wx:if="{{!user.avatarUrl}}" class="avatar avatar-btn" open-type="chooseAvatar"
+          bindchooseavatar="onChooseAvatar">
+          <text class="avatar-ph">🌷</text>
+        </button>
+        <image wx:else src="{{user.avatarUrl}}" class="avatar" mode="aspectFill" bindtap="onEditProfile" />
+
+        <view class="flex-1 profile-info">
+          <view class="profile-name" bindtap="onEditProfile">
+            {{user.nickName || '点击设置昵称'}}
+            <text class="profile-edit">✎</text>
+          </view>
+          <view class="profile-level">
+            <text class="level-badge">{{user.memberName || '普通会员'}}</text>
+            <text wx:if="{{user.discount < 1000}}" class="level-discount">
+              享 {{discountText}} 折
+            </text>
+          </view>
+        </view>
+      </view>
+
+      <view class="stats" bindtap="goMember">
+        <view class="stat">
+          <text class="stat-num">{{user.points || 0}}</text>
+          <text class="stat-label">积分</text>
+        </view>
+        <view class="stat">
+          <text class="stat-num">{{couponCount}}</text>
+          <text class="stat-label">优惠券</text>
+        </view>
+        <view class="stat">
+          <text class="stat-num">{{user.orderCount || 0}}</text>
+          <text class="stat-label">累计订单</text>
+        </view>
+        <view class="stat">
+          <text class="stat-num">¥{{spentText}}</text>
+          <text class="stat-label">累计消费</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 订单入口 -->
+    <view class="card card-tight">
+      <view class="block-head">
+        <text class="t-md t-bold">我的订单</text>
+        <text class="t-sm t-muted" bindtap="goOrders" data-status="all">全部订单 ›</text>
+      </view>
+      <view class="order-entry">
+        <view class="entry" bindtap="goOrders" data-status="pending_pay">
+          <text class="entry-icon">💰</text>
+          <text class="entry-text">待付款</text>
+          <view wx:if="{{counters.pendingPay > 0}}" class="entry-badge">{{counters.pendingPay}}</view>
+        </view>
+        <view class="entry" bindtap="goOrders" data-status="paid">
+          <text class="entry-icon">📦</text>
+          <text class="entry-text">待发货</text>
+          <view wx:if="{{counters.paid > 0}}" class="entry-badge">{{counters.paid}}</view>
+        </view>
+        <view class="entry" bindtap="goOrders" data-status="receiving">
+          <text class="entry-icon">🚚</text>
+          <text class="entry-text">待收货</text>
+          <view wx:if="{{counters.receiving > 0}}" class="entry-badge">{{counters.receiving}}</view>
+        </view>
+        <view class="entry" bindtap="goOrders" data-status="completed">
+          <text class="entry-icon">✅</text>
+          <text class="entry-text">已完成</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 功能列表 -->
+    <view class="card card-tight">
+      <view class="cell cell-arrow" bindtap="goReservations">
+        <text class="cell-icon">📅</text>
+        <text class="cell-label">我的预约</text>
+        <text class="cell-value t-muted">节日预购订单</text>
+      </view>
+      <view class="cell cell-arrow" bindtap="goMember">
+        <text class="cell-icon">👑</text>
+        <text class="cell-label">会员中心</text>
+        <text class="cell-value t-muted">{{user.memberName || '普通会员'}}</text>
+      </view>
+      <view class="cell cell-arrow" bindtap="goCoupon">
+        <text class="cell-icon">🎟</text>
+        <text class="cell-label">优惠券</text>
+        <text class="cell-value t-muted">{{couponCount}} 张可用</text>
+      </view>
+      <view class="cell cell-arrow" bindtap="goAddress">
+        <text class="cell-icon">📍</text>
+        <text class="cell-label">收货地址</text>
+      </view>
+      <view class="cell cell-arrow" bindtap="goShop">
+        <text class="cell-icon">🏪</text>
+        <text class="cell-label">门店信息</text>
+      </view>
+      <button wx:if="{{!user.hasPhone}}" class="cell cell-btn" open-type="getPhoneNumber"
+        bindgetphonenumber="onGetPhone">
+        <text class="cell-icon">📱</text>
+        <text class="cell-label">绑定手机号</text>
+        <text class="cell-value t-rose">去绑定 ›</text>
+      </button>
+      <view wx:else class="cell">
+        <text class="cell-icon">📱</text>
+        <text class="cell-label">手机号</text>
+        <text class="cell-value t-muted">{{user.phone}}</text>
+      </view>
+      <button class="cell cell-btn" open-type="contact">
+        <text class="cell-icon">💬</text>
+        <text class="cell-label">联系客服</text>
+        <text class="cell-value t-muted">在线咨询 ›</text>
+      </button>
+    </view>
+
+    <!-- 商家入口 -->
+    <view wx:if="{{user.isAdmin}}" class="card card-tight admin-card">
+      <view class="cell cell-arrow" bindtap="goAdmin">
+        <text class="cell-icon">🛠</text>
+        <text class="cell-label">商家管理台</text>
+        <text class="cell-value t-muted">商品 · 订单 · 库存</text>
+      </view>
+    </view>
+    <view wx:elif="{{showInitEntry}}" class="init-entry" bindtap="onInitAdmin">
+      首次使用？点此将当前账号设为店主
+    </view>
+
+    <view class="version">花知道 v1.0.0</view>
+    <view class="safe-bottom"></view>
+  </scroll-view>
+</view>

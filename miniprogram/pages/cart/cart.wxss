@@ -1,0 +1,91 @@
+.page { height: 100vh; display: flex; flex-direction: column; }
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 24rpx;
+  background: #fff;
+  border-bottom: 2rpx solid var(--line);
+}
+.head-edit { font-size: 26rpx; color: var(--rose); }
+
+.scroll { flex: 1; }
+.items { padding: 20rpx 24rpx 0; }
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 18rpx;
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 20rpx;
+  margin-bottom: 20rpx;
+  box-shadow: var(--shadow);
+}
+
+/* 勾选圈 */
+.item-check, .bar-check {
+  width: 40rpx; height: 40rpx;
+  border: 3rpx solid #d5cfcb;
+  border-radius: 50%;
+  flex-shrink: 0;
+  position: relative;
+}
+.item-check.checked, .bar-check.checked {
+  background: var(--rose);
+  border-color: var(--rose);
+}
+.item-check.checked::after, .bar-check.checked::after {
+  content: '';
+  position: absolute;
+  left: 12rpx; top: 6rpx;
+  width: 10rpx; height: 18rpx;
+  border-right: 4rpx solid #fff;
+  border-bottom: 4rpx solid #fff;
+  transform: rotate(45deg);
+}
+
+.item-img {
+  width: 160rpx; height: 160rpx;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--rose-bg);
+  flex-shrink: 0;
+}
+.item-img image { width: 100%; height: 100%; }
+.item-img-ph {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 56rpx;
+}
+
+.item-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8rpx; }
+.item-name { font-size: 28rpx; line-height: 1.4; }
+.item-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+}
+.item-price { font-size: 32rpx; }
+
+.item-del {
+  width: 90rpx;
+  text-align: center;
+  color: var(--danger);
+  font-size: 26rpx;
+  flex-shrink: 0;
+}
+
+.tip-card {
+  margin: 0 24rpx 20rpx;
+  padding: 20rpx;
+  background: #fff7ea;
+  border-radius: var(--radius-sm);
+}
+
+.bar-total { text-align: right; }
+.bar-price { font-size: 38rpx; }
+.bar-fee { display: block; margin-top: 2rpx; }
+.bar-btn { min-width: 200rpx; }

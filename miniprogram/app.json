@@ -1,0 +1,55 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/category/category",
+    "pages/cart/cart",
+    "pages/user/user",
+    "pages/search/search",
+    "pages/product-detail/product-detail",
+    "pages/order-confirm/order-confirm",
+    "pages/order-list/order-list",
+    "pages/order-detail/order-detail",
+    "pages/reservation-create/reservation-create",
+    "pages/reservation-list/reservation-list",
+    "pages/address-list/address-list",
+    "pages/address-edit/address-edit",
+    "pages/member/member",
+    "pages/coupon/coupon",
+    "pages/shop-info/shop-info",
+    "pages/admin/dashboard/dashboard",
+    "pages/admin/products/products",
+    "pages/admin/product-edit/product-edit",
+    "pages/admin/orders/orders",
+    "pages/admin/admin-order-detail/admin-order-detail",
+    "pages/admin/reservations/reservations",
+    "pages/admin/stats/stats"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#ffffff",
+    "navigationBarTitleText": "花知道",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#f6f5f3"
+  },
+  "tabBar": {
+    "color": "#9a9490",
+    "selectedColor": "#c2185b",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "white",
+    "list": [
+      { "pagePath": "pages/index/index", "text": "首页", "iconPath": "images/tab-home.png", "selectedIconPath": "images/tab-home-active.png" },
+      { "pagePath": "pages/category/category", "text": "分类", "iconPath": "images/tab-category.png", "selectedIconPath": "images/tab-category-active.png" },
+      { "pagePath": "pages/cart/cart", "text": "购物车", "iconPath": "images/tab-cart.png", "selectedIconPath": "images/tab-cart-active.png" },
+      { "pagePath": "pages/user/user", "text": "我的", "iconPath": "images/tab-user.png", "selectedIconPath": "images/tab-user-active.png" }
+    ]
+  },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "用于推荐就近门店与计算配送范围"
+    }
+  },
+  "requiredPrivateInfos": ["chooseAddress", "getLocation"],
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents",
+  "style": "v2"
+}

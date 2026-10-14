@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "花知道",
+  "navigationStyle": "custom",
+  "enablePullDownRefresh": true,
+  "backgroundTextStyle": "dark",
+  "usingComponents": {
+    "product-card": "/components/product-card/product-card"
+  }
+}

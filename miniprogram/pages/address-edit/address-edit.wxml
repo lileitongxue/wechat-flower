@@ -1,0 +1,45 @@
+<view class="page">
+  <scroll-view scroll-y class="scroll">
+    <view class="card card-tight">
+      <view class="f-row">
+        <text class="f-label">收货人</text>
+        <input class="f-input" placeholder="请填写收货人姓名" maxlength="20"
+          value="{{form.name}}" bindinput="onInput" data-field="name" />
+      </view>
+      <view class="f-row">
+        <text class="f-label">手机号</text>
+        <input class="f-input" placeholder="请填写手机号" type="number" maxlength="11"
+          value="{{form.phone}}" bindinput="onInput" data-field="phone" />
+      </view>
+      <view class="f-row" bindtap="onRegion">
+        <text class="f-label">所在地区</text>
+        <text class="f-input {{regionText ? '' : 't-muted'}}">{{regionText || '请选择省市区'}}</text>
+        <text class="f-arrow">›</text>
+      </view>
+      <view class="f-row f-row-area">
+        <text class="f-label">详细地址</text>
+        <textarea class="f-textarea" placeholder="街道、门牌号、楼层等" maxlength="120"
+          value="{{form.detail}}" bindinput="onInput" data-field="detail" auto-height />
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="row-between">
+        <view>
+          <view class="t-md">设为默认地址</view>
+          <view class="t-sm t-muted">下单时自动选用该地址</view>
+        </view>
+        <switch checked="{{form.isDefault}}" color="#c2185b" bindchange="onDefaultChange" />
+      </view>
+    </view>
+
+    <view wx:if="{{form.addressId}}" class="del-btn" bindtap="onDelete">删除该地址</view>
+    <view class="bottom-placeholder"></view>
+  </scroll-view>
+
+  <view class="bottom-bar">
+    <button class="btn btn-primary flex-1" bindtap="onSave" disabled="{{saving}}">
+      {{saving ? '保存中…' : '保存地址'}}
+    </button>
+  </view>
+</view>

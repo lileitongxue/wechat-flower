@@ -1,0 +1,130 @@
+.page { min-height: 100vh; display: flex; flex-direction: column; }
+.scroll { flex: 1; }
+
+.gallery { height: 620rpx; background: var(--rose-bg); }
+.gallery-img { width: 100%; height: 100%; }
+.gallery-ph {
+  display: flex; align-items: center; justify-content: center;
+  font-size: 140rpx;
+}
+
+.head { background: #fff; padding: 28rpx 24rpx; }
+.head-price { display: flex; align-items: baseline; flex-wrap: wrap; gap: 10rpx; }
+.head-price-main { font-size: 48rpx; }
+.head-vip {
+  background: linear-gradient(135deg, #8d6e63, #5d4037);
+  color: #fff;
+  font-size: 20rpx;
+}
+.head-unit { font-size: 24rpx; color: var(--ink-3); }
+.head-name { font-size: 34rpx; font-weight: 600; margin-top: 16rpx; line-height: 1.4; }
+.head-sub { font-size: 26rpx; color: var(--ink-3); margin-top: 8rpx; }
+.head-meta { display: flex; gap: 24rpx; margin-top: 16rpx; flex-wrap: wrap; }
+.head-tags { display: flex; gap: 10rpx; margin-top: 16rpx; flex-wrap: wrap; }
+
+.info { padding: 8rpx 24rpx; }
+.info-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 20rpx;
+  padding: 20rpx 0;
+  border-bottom: 2rpx solid var(--line);
+}
+.info-row:last-child { border-bottom: none; }
+.info-label { color: var(--ink-3); font-size: 26rpx; width: 70rpx; flex-shrink: 0; }
+.info-fee { display: block; margin-top: 6rpx; }
+.info-arrow { color: var(--ink-3); font-size: 32rpx; }
+
+.detail-title { font-size: 30rpx; font-weight: 600; margin-bottom: 16rpx; }
+.detail-row { display: flex; gap: 20rpx; padding: 12rpx 0; }
+.detail-key { color: var(--ink-3); font-size: 26rpx; width: 70rpx; flex-shrink: 0; }
+.detail-val { font-size: 26rpx; color: var(--ink-2); flex: 1; line-height: 1.6; }
+.detail-desc {
+  margin-top: 16rpx;
+  padding-top: 16rpx;
+  border-top: 2rpx solid var(--line);
+  font-size: 27rpx;
+  color: var(--ink-2);
+  line-height: 1.75;
+}
+
+.related { display: flex; flex-wrap: wrap; padding: 0 24rpx; gap: 20rpx; }
+.related-item { width: calc((100% - 20rpx) / 2); }
+
+/* 底部栏 */
+.bar-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 92rpx;
+  position: relative;
+  flex-shrink: 0;
+}
+.bar-icon-emoji { font-size: 38rpx; }
+.bar-icon-text { font-size: 20rpx; color: var(--ink-2); margin-top: 2rpx; }
+.bar-badge {
+  position: absolute;
+  top: -6rpx; right: 10rpx;
+  min-width: 30rpx; height: 30rpx;
+  padding: 0 6rpx;
+  background: var(--danger);
+  color: #fff;
+  font-size: 20rpx;
+  line-height: 30rpx;
+  text-align: center;
+  border-radius: 15rpx;
+}
+
+/* 规格弹层 */
+.mask {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 300;
+  display: flex;
+  align-items: flex-end;
+}
+.sku {
+  width: 100%;
+  background: #fff;
+  border-radius: 28rpx 28rpx 0 0;
+  padding: 32rpx 24rpx 24rpx;
+  animation: slide-up 0.22s ease;
+}
+@keyframes slide-up {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+.sku-head { display: flex; gap: 20rpx; align-items: center; padding-bottom: 24rpx; }
+.sku-img { width: 160rpx; height: 160rpx; border-radius: var(--radius-sm); background: var(--rose-bg); }
+.sku-img-ph { display: flex; align-items: center; justify-content: center; font-size: 60rpx; }
+.sku-price { font-size: 42rpx; }
+.sku-stock { margin-top: 10rpx; }
+.sku-close { font-size: 36rpx; color: var(--ink-3); padding: 0 10rpx; align-self: flex-start; }
+.sku-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx 0;
+  border-top: 2rpx solid var(--line);
+}
+.sku-card-row { flex-direction: column; align-items: stretch; gap: 16rpx; }
+.sku-input { margin-top: 0; }
+.sku-total {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 24rpx 0;
+  border-top: 2rpx solid var(--line);
+}
+.sku-total-price { font-size: 44rpx; }
+.sku-btn { width: 100%; margin-top: 8rpx; }
+
+.loading-wrap {
+  padding: 60rpx 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.loading-wrap .empty-icon { font-size: 110rpx; opacity: .5; margin-bottom: 20rpx; }
+.loading-wrap .skeleton { width: 100%; }

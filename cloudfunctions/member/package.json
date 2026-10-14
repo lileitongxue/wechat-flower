@@ -1,0 +1,9 @@
+{
+  "name": "member",
+  "version": "1.0.0",
+  "description": "会员、优惠券与地址",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

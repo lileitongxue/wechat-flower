@@ -1,0 +1,26 @@
+<view class="page">
+  <scroll-view scroll-y class="scroll">
+    <view class="wrap">
+      <view wx:for="{{list}}" wx:key="_id" class="addr-card" bindtap="onPick" data-index="{{index}}">
+        <view class="flex-1">
+          <view class="addr-head">
+            <text class="addr-name">{{item.name}}</text>
+            <text class="addr-phone">{{item.phone}}</text>
+            <text wx:if="{{item.isDefault}}" class="tag">默认</text>
+          </view>
+          <view class="addr-detail">{{item.province}}{{item.city}}{{item.district}}{{item.detail}}</view>
+        </view>
+        <text class="addr-edit" catchtap="onEdit" data-id="{{item._id}}">编辑</text>
+      </view>
+
+      <empty-state wx:if="{{!list.length && !loading}}" icon="📍" text="还没有收货地址"
+        hint="添加地址后可享受配送到家" />
+    </view>
+    <view class="bottom-placeholder"></view>
+  </scroll-view>
+
+  <view class="bottom-bar">
+    <button class="btn btn-plain" bindtap="chooseWxAddress">📋 微信导入</button>
+    <button class="btn btn-primary flex-1" bindtap="onAdd">+ 新增地址</button>
+  </view>
+</view>

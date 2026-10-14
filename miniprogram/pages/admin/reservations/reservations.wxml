@@ -1,0 +1,67 @@
+<view class="page">
+  <scroll-view scroll-x class="tabs" enhanced show-scrollbar="{{false}}">
+    <view class="tabs-inner">
+      <view wx:for="{{tabs}}" wx:key="key" class="tab {{status === item.key ? 'active' : ''}}"
+        bindtap="onTab" data-key="{{item.key}}">{{item.label}}</view>
+    </view>
+  </scroll-view>
+
+  <scroll-view scroll-y class="scroll">
+    <view class="wrap">
+      <view wx:for="{{list}}" wx:key="_id" class="r">
+        <view class="r-head">
+          <view>
+            <text class="r-date">{{item.dateText}}</text>
+            <text class="r-time">{{item.deliveryTime}}</text>
+          </view>
+          <text class="r-status {{item.status}}">{{item.statusText}}</text>
+        </view>
+
+        <view class="r-body">
+          <view class="kv">
+            <text class="k">客户</text>
+            <text class="v">{{item.contactName}} {{item.contactPhone}}</text>
+            <text class="v-op" catchtap="onCall" data-phone="{{item.contactPhone}}">拨打</text>
+          </view>
+          <view class="kv">
+            <text class="k">交付</text>
+            <text class="v">{{item.deliveryType === 'pickup' ? '到店自提' : '配送到家'}}</text>
+          </view>
+          <view wx:if="{{item.addressText}}" class="kv">
+            <text class="k">地址</text>
+            <text class="v">{{item.addressText}}</text>
+          </view>
+          <view class="kv">
+            <text class="k">花材</text>
+            <text class="v">{{item.goodsText}}</text>
+          </view>
+          <view wx:if="{{item.greetingCard}}" class="kv">
+            <text class="k">寄语</text>
+            <text class="v">{{item.greetingCard}}</text>
+          </view>
+          <view wx:if="{{item.remark}}" class="kv">
+            <text class="k">要求</text>
+            <text class="v">{{item.remark}}</text>
+          </view>
+          <view class="kv">
+            <text class="k">金额</text>
+            <text class="v">
+              <text class="price">{{item.totalText}}</text>
+              <text class="t-sm t-muted"> （定金 ¥{{item.depositText}}）</text>
+            </text>
+          </view>
+        </view>
+
+        <view wx:if="{{item.actions.length}}" class="r-actions">
+          <button wx:for="{{item.actions}}" wx:for-item="act" wx:key="status"
+            class="btn btn-sm {{act.primary ? 'btn-primary' : 'btn-plain'}}"
+            bindtap="onAction" data-id="{{item._id}}" data-status="{{act.status}}"
+            data-label="{{act.label}}">{{act.label}}</button>
+        </view>
+      </view>
+
+      <empty-state wx:if="{{!list.length && !loading}}" icon="📅" text="没有相关预约单" />
+    </view>
+    <view class="safe-bottom"></view>
+  </scroll-view>
+</view>

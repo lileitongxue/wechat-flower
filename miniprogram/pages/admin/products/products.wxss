@@ -1,0 +1,77 @@
+.page { height: 100vh; display: flex; flex-direction: column; }
+.filters { background: #fff; border-bottom: 2rpx solid var(--line); }
+.search {
+  display: flex;
+  align-items: center;
+  margin: 16rpx 24rpx;
+  height: 68rpx;
+  background: #f4f1ef;
+  border-radius: 34rpx;
+  padding: 0 24rpx;
+  font-size: 27rpx;
+}
+.search-clear { color: var(--ink-3); padding: 0 8rpx; }
+.tabs { display: flex; }
+.tab {
+  flex: 1; text-align: center; padding: 20rpx 0;
+  font-size: 26rpx; color: var(--ink-2); position: relative;
+}
+.tab.active { color: var(--rose); font-weight: 600; }
+.tab.active::after {
+  content: ''; position: absolute; left: 50%; bottom: 0;
+  transform: translateX(-50%); width: 40rpx; height: 4rpx;
+  background: var(--rose); border-radius: 2rpx;
+}
+
+.scroll { flex: 1; }
+.wrap { padding: 20rpx 24rpx; }
+
+.p {
+  display: flex;
+  gap: 20rpx;
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 20rpx;
+  margin-bottom: 20rpx;
+  box-shadow: var(--shadow);
+}
+.p-img {
+  width: 160rpx; height: 160rpx;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--rose-bg);
+  flex-shrink: 0;
+  position: relative;
+}
+.p-img image { width: 100%; height: 100%; }
+.p-img-ph { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 56rpx; }
+.p-off {
+  position: absolute;
+  inset: 0;
+  background: rgba(43, 37, 34, 0.55);
+  color: #fff;
+  font-size: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.p-body { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.p-name { font-size: 28rpx; font-weight: 500; }
+.p-meta { display: flex; align-items: baseline; gap: 20rpx; margin-top: 10rpx; }
+.p-stock {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 12rpx;
+}
+.warn-text { color: var(--warn); }
+.p-stock-ops { display: flex; gap: 10rpx; }
+.p-op {
+  font-size: 23rpx;
+  color: var(--ink-2);
+  border: 2rpx solid var(--line);
+  border-radius: 20rpx;
+  padding: 5rpx 16rpx;
+}
+.p-op-del { color: var(--danger); border-color: #f2d6d6; }

@@ -1,0 +1,91 @@
+<view class="page" wx:if="{{order}}">
+  <scroll-view scroll-y class="scroll">
+    <view class="status-bar">
+      <text class="status-text">{{statusText}}</text>
+      <text class="t-sm" style="opacity:.85">{{order.orderNo}}</text>
+    </view>
+
+    <!-- 客户信息 -->
+    <view class="card">
+      <view class="blk-title">客户与配送</view>
+      <view class="kv">
+        <text class="k">配送方式</text>
+        <text class="v">{{order.deliveryType === 'pickup' ? '到店自提' : '配送到家'}}</text>
+      </view>
+      <view class="kv">
+        <text class="k">联系人</text>
+        <text class="v">{{order.contactName}}</text>
+        <text class="v-op" catchtap="callUser">拨打</text>
+      </view>
+      <view class="kv">
+        <text class="k">电话</text>
+        <text class="v">{{order.contactPhone}}</text>
+      </view>
+      <view wx:if="{{addressText}}" class="kv">
+        <text class="k">收货地址</text>
+        <text class="v">{{addressText}}</text>
+        <text class="v-op" catchtap="copyAddress">复制</text>
+      </view>
+      <view wx:if="{{order.pickupTime}}" class="kv">
+        <text class="k">自提时间</text>
+        <text class="v">{{order.pickupTime}}</text>
+      </view>
+      <view wx:if="{{order.pickupCode}}" class="kv">
+        <text class="k">自提码</text>
+        <text class="v t-rose t-bold">{{order.pickupCode}}</text>
+      </view>
+      <view wx:if="{{order.greetingCard}}" class="kv">
+        <text class="k">贺卡寄语</text>
+        <text class="v">{{order.greetingCard}}</text>
+      </view>
+      <view wx:if="{{order.remark}}" class="kv">
+        <text class="k">客户备注</text>
+        <text class="v">{{order.remark}}</text>
+      </view>
+    </view>
+
+    <!-- 商品 -->
+    <view class="card">
+      <view class="blk-title">商品明细</view>
+      <view wx:for="{{order.items}}" wx:key="productId" class="g">
+        <text class="flex-1">{{item.name}}</text>
+        <text class="t-sm t-muted">×{{item.quantity}}</text>
+        <text class="price g-price">{{item.subtotalText}}</text>
+      </view>
+      <view class="kv kv-sum">
+        <text class="k">商品小计</text>
+        <text class="v">¥{{goodsText}}</text>
+      </view>
+      <view class="kv">
+        <text class="k">配送费</text>
+        <text class="v">¥{{feeText}}</text>
+      </view>
+      <view wx:if="{{order.couponDiscount > 0}}" class="kv">
+        <text class="k">优惠券</text>
+        <text class="v t-rose">-¥{{couponText}}</text>
+      </view>
+      <view class="kv">
+        <text class="k t-bold">实付金额</text>
+        <text class="v price">{{totalText}}</text>
+      </view>
+    </view>
+
+    <!-- 流转 -->
+    <view wx:if="{{timeline.length}}" class="card">
+      <view class="blk-title">处理记录</view>
+      <view wx:for="{{timeline}}" wx:key="index" class="tl">
+        <text class="tl-time">{{item.atText}}</text>
+        <text class="flex-1">{{item.note}}</text>
+        <text wx:if="{{item.operator}}" class="t-sm t-muted">{{item.operator}}</text>
+      </view>
+    </view>
+
+    <view class="bottom-placeholder"></view>
+  </scroll-view>
+
+  <view wx:if="{{actions.length}}" class="bottom-bar">
+    <button wx:for="{{actions}}" wx:key="status"
+      class="btn {{item.primary ? 'btn-primary' : 'btn-plain'}} flex-1"
+      bindtap="onAction" data-status="{{item.status}}" data-label="{{item.label}}">{{item.label}}</button>
+  </view>
+</view>

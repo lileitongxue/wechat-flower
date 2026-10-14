@@ -1,0 +1,37 @@
+.page { height: 100vh; display: flex; flex-direction: column; }
+.scroll { flex: 1; }
+.status-bar {
+  background: linear-gradient(135deg, #c2185b, #8e1248);
+  color: #fff;
+  padding: 36rpx 32rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+.status-text { font-size: 38rpx; font-weight: 600; }
+
+.blk-title {
+  font-size: 29rpx;
+  font-weight: 600;
+  margin-bottom: 16rpx;
+  padding-bottom: 14rpx;
+  border-bottom: 2rpx solid var(--line);
+}
+.kv { display: flex; align-items: flex-start; gap: 16rpx; padding: 12rpx 0; font-size: 26rpx; }
+.kv-sum { border-top: 2rpx solid var(--line); margin-top: 12rpx; padding-top: 18rpx; }
+.k { color: var(--ink-3); width: 150rpx; flex-shrink: 0; }
+.v { flex: 1; color: var(--ink-2); word-break: break-all; }
+.v-op {
+  color: var(--rose);
+  font-size: 23rpx;
+  border: 2rpx solid var(--rose);
+  border-radius: 20rpx;
+  padding: 2rpx 16rpx;
+  flex-shrink: 0;
+}
+
+.g { display: flex; align-items: center; gap: 16rpx; padding: 12rpx 0; font-size: 26rpx; }
+.g-price { font-size: 28rpx; }
+
+.tl { display: flex; align-items: center; gap: 16rpx; padding: 10rpx 0; font-size: 25rpx; }
+.tl-time { color: var(--ink-3); font-size: 23rpx; width: 180rpx; flex-shrink: 0; }

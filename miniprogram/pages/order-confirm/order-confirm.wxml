@@ -1,0 +1,183 @@
+<view class="page">
+  <scroll-view scroll-y class="scroll">
+    <!-- 配送方式 -->
+    <view class="seg">
+      <view class="seg-item {{deliveryType === 'delivery' ? 'active' : ''}}"
+        bindtap="onDeliveryType" data-type="delivery">🚚 配送到家</view>
+      <view class="seg-item {{deliveryType === 'pickup' ? 'active' : ''}}"
+        bindtap="onDeliveryType" data-type="pickup">🏪 到店自提</view>
+    </view>
+
+    <!-- 收货地址 -->
+    <view wx:if="{{deliveryType === 'delivery'}}" class="card addr" bindtap="goAddress">
+      <block wx:if="{{address}}">
+        <view class="addr-head">
+          <text class="addr-name">{{address.name}}</text>
+          <text class="addr-phone">{{address.phone}}</text>
+          <text wx:if="{{address.isDefault}}" class="tag tag-gray">默认</text>
+        </view>
+        <view class="addr-detail">{{address.province}}{{address.city}}{{address.district}}{{address.detail}}</view>
+      </block>
+      <view wx:else class="addr-empty">
+        <text class="addr-empty-icon">📍</text>
+        <text class="t-md t-sub">点击选择收货地址</text>
+      </view>
+      <text class="addr-arrow">›</text>
+    </view>
+
+    <!-- 自提信息 -->
+    <view wx:else class="card">
+      <view class="cell-line">
+        <text class="cell-label">自提门店</text>
+        <text class="flex-1 t-md">{{shop.name}}</text>
+      </view>
+      <view class="cell-line">
+        <text class="cell-label">门店地址</text>
+        <text class="flex-1 t-md t-sub">{{shop.address}}</text>
+      </view>
+      <view class="cell-line" bindtap="openPickupPicker">
+        <text class="cell-label">自提时间</text>
+        <text class="flex-1 t-md {{pickupTime ? '' : 't-muted'}}">{{pickupTime || '请选择'}}</text>
+        <text class="addr-arrow">›</text>
+      </view>
+      <view class="cell-line">
+        <text class="cell-label">联系电话</text>
+        <input class="flex-1 cell-input" placeholder="便于门店联系您" type="number"
+          maxlength="11" value="{{contactPhone}}" bindinput="onPhoneInput" />
+      </view>
+    </view>
+
+    <!-- 商品清单 -->
+    <view class="card card-tight">
+      <view class="goods-head">
+        <text class="t-md t-bold">商品清单</text>
+        <text class="t-sm t-muted">共 {{itemCount}} 件</text>
+      </view>
+      <view wx:for="{{items}}" wx:key="productId" class="goods-item">
+        <view class="goods-img">
+          <image wx:if="{{item.cover}}" src="{{item.cover}}" mode="aspectFill" />
+          <view wx:else class="goods-img-ph">🌸</view>
+        </view>
+        <view class="flex-1">
+          <view class="goods-name ellipsis-2">{{item.name}}</view>
+          <view class="t-sm t-muted">{{item.unit}} × {{item.quantity}}</view>
+        </view>
+        <view class="goods-right">
+          <text class="price">{{item.priceText}}</text>
+          <text class="t-sm t-muted">×{{item.quantity}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 优惠与备注 -->
+    <view class="card card-tight">
+      <view class="cell-line" bindtap="openCouponPicker">
+        <text class="cell-label">优惠券</text>
+        <text class="flex-1 cell-right {{coupon ? 't-rose' : 't-muted'}}">
+          {{coupon ? '-¥' + couponDiscountText : (couponCount ? couponCount + ' 张可用' : '暂无可用')}}
+        </text>
+        <text class="addr-arrow">›</text>
+      </view>
+      <view class="cell-line">
+        <text class="cell-label">贺卡寄语</text>
+        <input class="flex-1 cell-input" placeholder="写给 TA 的话（选填）" maxlength="40"
+          value="{{greetingCard}}" bindinput="onCardInput" />
+      </view>
+      <view class="cell-line">
+        <text class="cell-label">订单备注</text>
+        <input class="flex-1 cell-input" placeholder="如期望送达时间（选填）" maxlength="60"
+          value="{{remark}}" bindinput="onRemarkInput" />
+      </view>
+    </view>
+
+    <!-- 金额明细 -->
+    <view class="card">
+      <view class="sum-row">
+        <text class="t-sub">商品小计</text>
+        <text class="t-md">¥{{goodsAmountText}}</text>
+      </view>
+      <view class="sum-row">
+        <text class="t-sub">配送费</text>
+        <text class="t-md">{{deliveryFeeLabel}}</text>
+      </view>
+      <view wx:if="{{memberDiscountAmount > 0}}" class="sum-row">
+        <text class="t-sub">会员折扣</text>
+        <text class="t-md t-rose">-¥{{memberDiscountText}}</text>
+      </view>
+      <view wx:if="{{coupon}}" class="sum-row">
+        <text class="t-sub">优惠券</text>
+        <text class="t-md t-rose">-¥{{couponDiscountText}}</text>
+      </view>
+      <view class="sum-total">
+        <text class="t-md">应付金额</text>
+        <text class="price sum-total-price">{{totalText}}</text>
+      </view>
+    </view>
+
+    <view class="agree">下单即表示同意《鲜花类商品售后说明》：鲜花为定制类商品，非质量问题不支持无理由退换</view>
+    <view class="bottom-placeholder"></view>
+  </scroll-view>
+
+  <view class="bottom-bar">
+    <view class="flex-1">
+      <text class="t-sm t-sub">应付 </text>
+      <text class="price bar-price">{{totalText}}</text>
+    </view>
+    <button class="btn btn-primary bar-btn" bindtap="submit" disabled="{{submitting}}">
+      {{submitting ? '提交中…' : '提交订单'}}
+    </button>
+  </view>
+
+  <!-- 优惠券选择 -->
+  <view wx:if="{{couponVisible}}" class="mask" bindtap="closeCouponPicker" catchtouchmove="noop">
+    <view class="sheet" catchtap="noop">
+      <view class="sheet-head">
+        <text class="t-lg t-bold">选择优惠券</text>
+        <text class="sheet-close" bindtap="closeCouponPicker">✕</text>
+      </view>
+      <scroll-view scroll-y class="sheet-body">
+        <view class="coupon-item {{!coupon ? 'active' : ''}}" bindtap="pickCoupon" data-index="-1">
+          <text class="t-md">不使用优惠券</text>
+        </view>
+        <view wx:for="{{coupons}}" wx:key="_id"
+          class="coupon-item {{coupon && coupon._id === item._id ? 'active' : ''}}"
+          bindtap="pickCoupon" data-index="{{index}}">
+          <view class="coupon-left">
+            <text class="coupon-value">{{item.valueText}}</text>
+            <text class="t-sm t-muted">{{item.thresholdText}}</text>
+          </view>
+          <view class="flex-1">
+            <view class="t-md">{{item.name}}</view>
+            <view class="t-sm t-muted">可省 ¥{{item.discountText}}</view>
+          </view>
+        </view>
+        <view wx:if="{{!coupons.length}}" class="sheet-empty">暂无可用优惠券</view>
+      </scroll-view>
+      <view class="safe-bottom"></view>
+    </view>
+  </view>
+
+  <!-- 自提时间选择 -->
+  <view wx:if="{{pickupVisible}}" class="mask" bindtap="closePickupPicker" catchtouchmove="noop">
+    <view class="sheet" catchtap="noop">
+      <view class="sheet-head">
+        <text class="t-lg t-bold">选择自提时间</text>
+        <text class="sheet-close" bindtap="closePickupPicker">✕</text>
+      </view>
+      <scroll-view scroll-y class="sheet-body">
+        <view wx:for="{{pickupDates}}" wx:key="date" class="pick-day">
+          <view class="pick-day-title">
+            {{item.label}}
+            <text wx:if="{{item.festival}}" class="tag">{{item.festival}}</text>
+          </view>
+          <view class="pick-slots">
+            <view wx:for="{{timeRanges}}" wx:for-item="slot" wx:key="*this"
+              class="pick-slot {{pickupTime === item.label + ' ' + slot ? 'active' : ''}}"
+              bindtap="pickTime" data-value="{{item.label}} {{slot}}">{{slot}}</view>
+          </view>
+        </view>
+      </scroll-view>
+      <view class="safe-bottom"></view>
+    </view>
+  </view>
+</view>

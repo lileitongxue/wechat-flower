@@ -1,0 +1,154 @@
+<view class="page" wx:if="{{order}}">
+  <scroll-view scroll-y class="scroll">
+    <!-- 状态头 -->
+    <view class="status-head {{headClass}}">
+      <view class="status-text">{{order.statusText}}</view>
+      <view wx:if="{{countdownText}}" class="status-sub">剩余支付时间 {{countdownText}}</view>
+      <view wx:elif="{{statusHint}}" class="status-sub">{{statusHint}}</view>
+    </view>
+
+    <!-- 自提码 -->
+    <view wx:if="{{order.deliveryType === 'pickup' && order.pickupCode && !order.pickupVerified}}"
+      class="card pickup">
+      <view class="t-sm t-muted">到店出示此码取花</view>
+      <view class="pickup-code">{{order.pickupCode}}</view>
+      <view class="t-sm t-muted">自提时间：{{order.pickupTime}}</view>
+      <view class="pickup-copy" bindtap="copyCode">复制</view>
+    </view>
+
+    <!-- 收货/自提信息 -->
+    <view class="card">
+      <view wx:if="{{order.deliveryType === 'delivery' && order.address}}" class="addr">
+        <text class="addr-icon">📍</text>
+        <view class="flex-1">
+          <view class="addr-head">
+            <text class="addr-name">{{order.address.name}}</text>
+            <text class="addr-phone">{{order.address.phone}}</text>
+          </view>
+          <view class="addr-detail">
+            {{order.address.province}}{{order.address.city}}{{order.address.district}}{{order.address.detail}}
+          </view>
+        </view>
+      </view>
+      <view wx:else class="addr">
+        <text class="addr-icon">🏪</text>
+        <view class="flex-1">
+          <view class="addr-head">
+            <text class="addr-name">到店自提</text>
+            <text class="addr-phone">{{order.contactPhone}}</text>
+          </view>
+          <view class="addr-detail">{{shop.address}}</view>
+          <view class="t-sm t-rose" style="margin-top: 6rpx;">自提时间：{{order.pickupTime}}</view>
+        </view>
+      </view>
+      <view wx:if="{{order.expressNo}}" class="express">
+        <text class="t-sm t-muted">配送信息</text>
+        <view class="t-md">{{order.courierName}} {{order.courierPhone}}</view>
+        <view class="t-sm t-muted">单号：{{order.expressNo}}</view>
+        <view class="express-call" bindtap="callCourier">呼叫</view>
+      </view>
+    </view>
+
+    <!-- 商品 -->
+    <view class="card card-tight">
+      <view wx:for="{{order.items}}" wx:key="productId" class="good"
+        bindtap="goProduct" data-id="{{item.productId}}">
+        <view class="good-img">
+          <image wx:if="{{item.cover}}" src="{{item.cover}}" mode="aspectFill" />
+          <view wx:else class="good-img-ph">🌸</view>
+        </view>
+        <view class="flex-1">
+          <view class="good-name ellipsis-2">{{item.name}}</view>
+          <view class="t-sm t-muted">{{item.unit}} × {{item.quantity}}</view>
+        </view>
+        <view class="good-right">
+          <text class="price">{{item.priceText}}</text>
+          <text class="t-sm t-muted">×{{item.quantity}}</text>
+        </view>
+      </view>
+
+      <view class="sum">
+        <view class="sum-row">
+          <text class="t-sub">商品小计</text>
+          <text>¥{{goodsText}}</text>
+        </view>
+        <view class="sum-row">
+          <text class="t-sub">配送费</text>
+          <text>{{deliveryFeeLabel}}</text>
+        </view>
+        <view wx:if="{{order.couponDiscount > 0}}" class="sum-row">
+          <text class="t-sub">优惠券</text>
+          <text class="t-rose">-¥{{couponText}}</text>
+        </view>
+        <view class="sum-row sum-row-total">
+          <text class="t-md">实付款</text>
+          <text class="price sum-price">{{totalText}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 订单信息 -->
+    <view class="card">
+      <view class="meta-row">
+        <text class="meta-key">订单编号</text>
+        <text class="meta-val">{{order.orderNo}}</text>
+        <text class="meta-copy" bindtap="copyOrderNo">复制</text>
+      </view>
+      <view class="meta-row">
+        <text class="meta-key">下单时间</text>
+        <text class="meta-val">{{createdText}}</text>
+      </view>
+      <view wx:if="{{paidText}}" class="meta-row">
+        <text class="meta-key">支付时间</text>
+        <text class="meta-val">{{paidText}}</text>
+      </view>
+      <view wx:if="{{order.greetingCard}}" class="meta-row">
+        <text class="meta-key">贺卡寄语</text>
+        <text class="meta-val">{{order.greetingCard}}</text>
+      </view>
+      <view wx:if="{{order.remark}}" class="meta-row">
+        <text class="meta-key">订单备注</text>
+        <text class="meta-val">{{order.remark}}</text>
+      </view>
+      <view wx:if="{{order.cancelReason}}" class="meta-row">
+        <text class="meta-key">取消原因</text>
+        <text class="meta-val">{{order.cancelReason}}</text>
+      </view>
+    </view>
+
+    <!-- 流转记录 -->
+    <view wx:if="{{timeline.length}}" class="card">
+      <view class="t-md t-bold" style="margin-bottom: 20rpx;">订单进度</view>
+      <view wx:for="{{timeline}}" wx:key="index" class="tl-item">
+        <view class="tl-dot {{index === 0 ? 'active' : ''}}"></view>
+        <view class="tl-line" wx:if="{{index !== timeline.length - 1}}"></view>
+        <view class="tl-body">
+          <view class="t-md">{{item.note}}</view>
+          <view class="t-sm t-muted">{{item.atText}}</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="help" bindtap="callShop">
+      <text class="t-md">☎️ 联系花店</text>
+      <text class="t-sm t-muted">{{shop.phone}}</text>
+    </view>
+
+    <view class="bottom-placeholder"></view>
+  </scroll-view>
+
+  <view class="bottom-bar">
+    <button wx:if="{{order.canCancel}}" class="btn btn-plain flex-1" bindtap="onCancel">
+      {{order.status === 'pending_pay' ? '取消订单' : '申请退款'}}
+    </button>
+    <button wx:if="{{order.canPay}}" class="btn btn-primary flex-1" bindtap="onPay">立即支付</button>
+    <button wx:if="{{order.canConfirm}}" class="btn btn-primary flex-1" bindtap="onConfirm">确认收货</button>
+    <button wx:if="{{!order.canPay && !order.canConfirm && !order.canCancel}}"
+      class="btn btn-outline flex-1" bindtap="onRebuy">再来一单</button>
+  </view>
+</view>
+
+<view wx:elif="{{loading}}" class="loading-wrap">
+  <view class="skeleton" style="height: 200rpx; margin: 24rpx;"></view>
+  <view class="skeleton" style="height: 300rpx; margin: 24rpx;"></view>
+</view>

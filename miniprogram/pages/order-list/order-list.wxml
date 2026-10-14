@@ -1,0 +1,69 @@
+<view class="page">
+  <view class="tabs">
+    <view wx:for="{{tabs}}" wx:key="key"
+      class="tab {{status === item.key ? 'active' : ''}}"
+      bindtap="onTab" data-key="{{item.key}}">
+      <text>{{item.label}}</text>
+      <view wx:if="{{counters[item.badge] > 0}}" class="tab-badge">{{counters[item.badge]}}</view>
+    </view>
+  </view>
+
+  <scroll-view scroll-y class="scroll" bindscrolltolower="loadMore"
+    refresher-enabled refresher-triggered="{{refreshing}}" bindrefresherrefresh="onRefresh">
+    <view wx:if="{{loading && !list.length}}" class="wrap">
+      <view wx:for="{{[1,2,3]}}" wx:key="*this" class="skeleton" style="height: 300rpx; margin-bottom: 20rpx;"></view>
+    </view>
+
+    <view wx:else class="wrap">
+      <view wx:for="{{list}}" wx:key="_id" class="order" bindtap="goDetail" data-id="{{item._id}}">
+        <view class="order-head">
+          <text class="t-sm t-muted">{{item.createdAtText}}</text>
+          <text class="order-status {{item.status === 'pending_pay' ? 'warn' : (item.status === 'completed' ? 'done' : '')}}">
+            {{item.statusText}}
+          </text>
+        </view>
+
+        <view class="order-goods">
+          <view wx:for="{{item.items}}" wx:for-item="g" wx:key="productId" class="order-good">
+            <view class="order-img">
+              <image wx:if="{{g.cover}}" src="{{g.cover}}" mode="aspectFill" />
+              <view wx:else class="order-img-ph">🌸</view>
+            </view>
+            <view class="flex-1">
+              <view class="order-name ellipsis">{{g.name}}</view>
+              <view class="t-sm t-muted">{{g.unit}} × {{g.quantity}}</view>
+            </view>
+            <text class="price">{{g.priceText}}</text>
+          </view>
+        </view>
+
+        <view class="order-foot">
+          <text class="t-sm t-muted">{{item.deliveryTypeText}} · 共 {{item.itemCount}} 件</text>
+          <view>
+            <text class="t-sm t-sub">实付 </text>
+            <text class="price order-total">{{item.totalText}}</text>
+          </view>
+        </view>
+
+        <view class="order-actions">
+          <button wx:if="{{item.canCancel}}" class="btn btn-plain btn-sm"
+            catchtap="onCancel" data-id="{{item._id}}">取消订单</button>
+          <button wx:if="{{item.canPay}}" class="btn btn-primary btn-sm"
+            catchtap="onPay" data-id="{{item._id}}">去支付</button>
+          <button wx:if="{{item.canConfirm}}" class="btn btn-primary btn-sm"
+            catchtap="onConfirm" data-id="{{item._id}}">确认收货</button>
+          <button wx:if="{{item.status === 'completed' || item.status === 'cancelled'}}"
+            class="btn btn-outline btn-sm" catchtap="onRebuy" data-id="{{item._id}}">再来一单</button>
+        </view>
+      </view>
+
+      <empty-state wx:if="{{!list.length}}" icon="📋" text="还没有相关订单"
+        hint="挑一束花，开启第一单" btn-text="去逛逛" bind:action="goHome" />
+
+      <view wx:if="{{list.length}}" class="load-more">
+        {{ hasMore ? (loading ? '加载中…' : '上拉加载更多') : '— 没有更多了 —' }}
+      </view>
+    </view>
+    <view class="safe-bottom"></view>
+  </scroll-view>
+</view>

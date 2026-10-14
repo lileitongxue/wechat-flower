@@ -1,0 +1,17 @@
+.stepper { display: flex; align-items: center; }
+.stepper-btn {
+  width: 52rpx; height: 52rpx;
+  display: flex; align-items: center; justify-content: center;
+  background: #f4f1ef;
+  color: var(--ink);
+  font-size: 32rpx;
+  border-radius: 8rpx;
+}
+.stepper-btn.disabled { color: #ccc5c0; }
+.stepper-input {
+  width: 72rpx;
+  height: 52rpx;
+  text-align: center;
+  font-size: 28rpx;
+  margin: 0 8rpx;
+}

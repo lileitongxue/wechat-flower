@@ -1,0 +1,10 @@
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 120rpx 60rpx;
+}
+.empty-icon { font-size: 110rpx; opacity: 0.45; }
+.empty-text { margin-top: 24rpx; color: var(--ink-2); font-size: 28rpx; }
+.empty-hint { margin-top: 10rpx; color: var(--ink-3); font-size: 24rpx; text-align: center; }
+.empty-btn { margin-top: 36rpx; }

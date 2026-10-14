@@ -1,0 +1,4 @@
+{
+  "navigationBarTitleText": "预约排期",
+  "usingComponents": { "empty-state": "/components/empty-state/empty-state" }
+}

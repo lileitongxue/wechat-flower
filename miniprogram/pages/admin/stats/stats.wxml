@@ -1,0 +1,53 @@
+<view class="page">
+  <scroll-view scroll-y class="scroll">
+    <view class="range">
+      <view wx:for="{{ranges}}" wx:key="days" class="range-item {{days === item.days ? 'active' : ''}}"
+        bindtap="onRange" data-days="{{item.days}}">{{item.label}}</view>
+    </view>
+
+    <!-- 汇总 -->
+    <view class="card sum">
+      <view class="sum-item">
+        <text class="sum-num">¥{{revenueText}}</text>
+        <text class="sum-label">区间销售额</text>
+      </view>
+      <view class="sum-item">
+        <text class="sum-num">{{data.totalOrders || 0}}</text>
+        <text class="sum-label">成交订单</text>
+      </view>
+      <view class="sum-item">
+        <text class="sum-num">¥{{avgText}}</text>
+        <text class="sum-label">客单价</text>
+      </view>
+    </view>
+
+    <!-- 趋势柱状图 -->
+    <view class="section-title">销售趋势</view>
+    <view class="card">
+      <view wx:if="{{chart.length}}" class="chart">
+        <view wx:for="{{chart}}" wx:key="date" class="bar-col">
+          <text class="bar-value">{{item.valueText}}</text>
+          <view class="bar-track">
+            <view class="bar-fill" style="height: {{item.percent}}%"></view>
+          </view>
+          <text class="bar-label">{{item.label}}</text>
+        </view>
+      </view>
+      <view wx:else class="chart-empty">该区间暂无成交数据</view>
+    </view>
+
+    <!-- 热销榜 -->
+    <view class="section-title">热销排行</view>
+    <view class="card card-tight">
+      <view wx:for="{{ranking}}" wx:key="productId" class="rank">
+        <text class="rank-no rank-no-{{index < 3 ? index + 1 : 'n'}}">{{index + 1}}</text>
+        <text class="flex-1 ellipsis">{{item.name}}</text>
+        <text class="t-sm t-muted">{{item.quantity}} 件</text>
+        <text class="price rank-amount">{{item.revenueText}}</text>
+      </view>
+      <view wx:if="{{!ranking.length}}" class="chart-empty">暂无销售记录</view>
+    </view>
+
+    <view class="safe-bottom"></view>
+  </scroll-view>
+</view>

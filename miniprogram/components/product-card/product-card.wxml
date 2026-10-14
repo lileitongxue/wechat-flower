@@ -1,0 +1,24 @@
+<view class="pcard {{layout}}" bindtap="onTap">
+  <view class="pcard-img">
+    <image wx:if="{{product.cover}}" src="{{product.cover}}" mode="aspectFill" lazy-load />
+    <view wx:else class="pcard-ph">🌸</view>
+    <view wx:if="{{product.stock <= 0}}" class="pcard-sold">已售罄</view>
+    <view wx:elif="{{product.stock <= 5}}" class="pcard-left">仅剩 {{product.stock}} 件</view>
+  </view>
+  <view class="pcard-body">
+    <view class="pcard-name ellipsis-2">{{product.name}}</view>
+    <view wx:if="{{product.subtitle}}" class="pcard-sub ellipsis">{{product.subtitle}}</view>
+    <view wx:if="{{product.tags.length}}" class="pcard-tags">
+      <text wx:for="{{product.tags}}" wx:key="*this" class="tag">{{item}}</text>
+    </view>
+    <view class="pcard-foot">
+      <view class="pcard-price">
+        <text class="price {{layout === 'list' ? 't-lg' : ''}}">{{priceText}}</text>
+        <text wx:if="{{product.hasMemberPrice}}" class="tag pcard-vip">会员价</text>
+        <text wx:elif="{{product.originalPrice > product.price}}" class="price-origin">¥{{originalText}}</text>
+      </view>
+      <view wx:if="{{showAdd && product.stock > 0}}" class="pcard-add" catchtap="onAdd">+</view>
+    </view>
+    <view wx:if="{{layout === 'list' && product.sales}}" class="pcard-sales">已售 {{product.sales}}</view>
+  </view>
+</view>

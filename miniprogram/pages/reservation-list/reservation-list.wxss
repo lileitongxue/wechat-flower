@@ -1,0 +1,70 @@
+.page { height: 100vh; display: flex; flex-direction: column; }
+.tabs { display: flex; background: #fff; border-bottom: 2rpx solid var(--line); }
+.tab {
+  flex: 1; text-align: center; padding: 24rpx 0;
+  font-size: 27rpx; color: var(--ink-2); position: relative;
+}
+.tab.active { color: var(--rose); font-weight: 600; }
+.tab.active::after {
+  content: ''; position: absolute; left: 50%; bottom: 0;
+  transform: translateX(-50%); width: 44rpx; height: 4rpx;
+  background: var(--rose); border-radius: 2rpx;
+}
+.scroll { flex: 1; }
+.wrap { padding: 20rpx 24rpx; }
+
+.rs {
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  margin-bottom: 20rpx;
+  overflow: hidden;
+}
+.rs-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24rpx;
+  background: linear-gradient(135deg, #fdf2f6, #fff);
+}
+.rs-date-main { font-size: 32rpx; font-weight: 600; }
+.rs-date-sub { font-size: 24rpx; color: var(--ink-3); margin-left: 16rpx; }
+.rs-status { font-size: 25rpx; font-weight: 500; color: var(--ink-2); }
+.rs-status.pending { color: var(--warn); }
+.rs-status.confirmed { color: var(--rose); }
+.rs-status.fulfilled { color: var(--green); }
+.rs-status.cancelled { color: var(--ink-3); }
+
+.rs-countdown {
+  padding: 12rpx 24rpx;
+  background: #fff7ea;
+  font-size: 24rpx;
+  color: #8a6434;
+}
+
+.rs-goods { padding: 8rpx 24rpx; }
+.rs-good { display: flex; gap: 18rpx; align-items: center; padding: 14rpx 0; }
+.rs-img {
+  width: 100rpx; height: 100rpx;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--rose-bg);
+  flex-shrink: 0;
+}
+.rs-img image { width: 100%; height: 100%; }
+.rs-img-ph { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 40rpx; }
+
+.rs-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 16rpx 24rpx;
+  border-top: 2rpx solid var(--line);
+}
+.rs-deposit { margin-left: 12rpx; }
+.rs-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16rpx;
+  padding: 0 24rpx 20rpx;
+}

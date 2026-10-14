@@ -1,0 +1,98 @@
+<view class="page">
+  <scroll-view scroll-y class="scroll">
+    <!-- 今日概览 -->
+    <view class="hero">
+      <view class="hero-label">今日销售额</view>
+      <view class="hero-amount">¥{{revenueText}}</view>
+      <view class="hero-row">
+        <view class="hero-item">
+          <text class="hero-num">{{data.todayOrders || 0}}</text>
+          <text class="hero-sub">今日订单</text>
+        </view>
+        <view class="hero-item">
+          <text class="hero-num">{{data.totalProducts || 0}}</text>
+          <text class="hero-sub">在售商品</text>
+        </view>
+        <view class="hero-item">
+          <text class="hero-num">{{data.pendingReservations || 0}}</text>
+          <text class="hero-sub">待确认预约</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 待办 -->
+    <view class="section-title">待处理</view>
+    <view class="todos">
+      <view class="todo" bindtap="goOrders" data-status="paid">
+        <view class="todo-num {{data.pendingShip > 0 ? 'hot' : ''}}">{{data.pendingShip || 0}}</view>
+        <view class="todo-label">待发货</view>
+      </view>
+      <view class="todo" bindtap="goOrders" data-status="pending_pickup">
+        <view class="todo-num {{data.pendingPickup > 0 ? 'hot' : ''}}">{{data.pendingPickup || 0}}</view>
+        <view class="todo-label">待自提</view>
+      </view>
+      <view class="todo" bindtap="goReservations">
+        <view class="todo-num {{data.pendingReservations > 0 ? 'hot' : ''}}">{{data.pendingReservations || 0}}</view>
+        <view class="todo-label">待排期</view>
+      </view>
+      <view class="todo" bindtap="goProducts" data-status="off">
+        <view class="todo-num">{{lowStockCount}}</view>
+        <view class="todo-label">库存预警</view>
+      </view>
+    </view>
+
+    <!-- 快捷操作 -->
+    <view class="section-title">快捷操作</view>
+    <view class="card card-tight">
+      <view class="cell cell-arrow" bindtap="goProductEdit">
+        <text class="cell-icon">➕</text>
+        <text class="cell-label">上架新商品</text>
+      </view>
+      <view class="cell cell-arrow" bindtap="goProducts">
+        <text class="cell-icon">🌷</text>
+        <text class="cell-label">商品与库存</text>
+      </view>
+      <view class="cell cell-arrow" bindtap="goOrders">
+        <text class="cell-icon">📋</text>
+        <text class="cell-label">订单管理</text>
+      </view>
+      <view class="cell cell-arrow" bindtap="goReservations">
+        <text class="cell-icon">📅</text>
+        <text class="cell-label">预约排期</text>
+      </view>
+      <view class="cell cell-arrow" bindtap="goStats">
+        <text class="cell-icon">📈</text>
+        <text class="cell-label">经营统计</text>
+      </view>
+      <view class="cell cell-arrow" bindtap="onVerifyPickup">
+        <text class="cell-icon">🎫</text>
+        <text class="cell-label">自提核销</text>
+        <text class="cell-value t-muted">输入 6 位码</text>
+      </view>
+      <view class="cell cell-arrow" bindtap="onSeed">
+        <text class="cell-icon">🌱</text>
+        <text class="cell-label">初始化示例数据</text>
+        <text class="cell-value t-muted">首次使用</text>
+      </view>
+    </view>
+
+    <!-- 低库存 -->
+    <view wx:if="{{data.lowStock.length}}">
+      <view class="section-title">库存预警</view>
+      <view class="card card-tight">
+        <view wx:for="{{data.lowStock}}" wx:key="_id" class="low"
+          bindtap="goProductEdit" data-id="{{item._id}}">
+          <view class="low-img">
+            <image wx:if="{{item.cover}}" src="{{item.cover}}" mode="aspectFill" />
+            <view wx:else class="low-img-ph">🌸</view>
+          </view>
+          <text class="flex-1 ellipsis">{{item.name}}</text>
+          <text class="low-stock {{item.outOfStock ? 'out' : ''}}">{{item.stockText}}</text>
+          <text class="low-add" catchtap="onQuickStock" data-id="{{item._id}}" data-name="{{item.name}}">补货</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="safe-bottom"></view>
+  </scroll-view>
+</view>

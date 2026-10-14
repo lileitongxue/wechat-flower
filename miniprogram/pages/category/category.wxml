@@ -1,0 +1,45 @@
+<view class="page">
+  <!-- 顶部排序 -->
+  <view class="sortbar">
+    <view wx:for="{{sorts}}" wx:key="key"
+      class="sort-item {{sortBy === item.key ? 'active' : ''}}"
+      bindtap="onSort" data-key="{{item.key}}">{{item.label}}</view>
+  </view>
+
+  <view class="body">
+    <!-- 左侧分类 -->
+    <scroll-view scroll-y class="side">
+      <view class="side-item {{!currentId ? 'active' : ''}}" bindtap="onCategory" data-id="">
+        <text>全部</text>
+      </view>
+      <view wx:for="{{categories}}" wx:key="_id"
+        class="side-item {{currentId === item._id ? 'active' : ''}}"
+        bindtap="onCategory" data-id="{{item._id}}">
+        <text class="side-icon">{{item.icon || '🌼'}}</text>
+        <text class="side-name">{{item.name}}</text>
+      </view>
+    </scroll-view>
+
+    <!-- 右侧商品 -->
+    <scroll-view scroll-y class="main" bindscrolltolower="loadMore" refresher-enabled
+      refresher-triggered="{{refreshing}}" bindrefresherrefresh="onRefresh">
+      <view wx:if="{{loading && !list.length}}" class="list">
+        <view wx:for="{{[1,2,3]}}" wx:key="*this" class="skeleton" style="height: 240rpx; margin-bottom: 20rpx;"></view>
+      </view>
+
+      <view wx:else class="list">
+        <view wx:for="{{list}}" wx:key="_id" class="list-item">
+          <product-card product="{{item}}" layout="list" bind:add="onAdd" />
+        </view>
+
+        <empty-state wx:if="{{!list.length}}" icon="🌾" text="该分类暂无商品"
+          hint="换个分类看看吧" />
+
+        <view wx:if="{{list.length}}" class="load-more">
+          {{ hasMore ? (loading ? '加载中…' : '上拉加载更多') : '— 没有更多了 —' }}
+        </view>
+      </view>
+      <view class="safe-bottom"></view>
+    </scroll-view>
+  </view>
+</view>

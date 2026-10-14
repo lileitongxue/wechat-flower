@@ -1,0 +1,56 @@
+.page { height: 100vh; display: flex; flex-direction: column; }
+.scroll { flex: 1; }
+
+.imgs { display: flex; flex-wrap: wrap; gap: 16rpx; }
+.img-item, .img-add {
+  width: 160rpx; height: 160rpx;
+  border-radius: var(--radius-sm);
+  position: relative;
+  overflow: hidden;
+}
+.img-item image { width: 100%; height: 100%; }
+.img-del {
+  position: absolute;
+  top: 0; right: 0;
+  width: 40rpx; height: 40rpx;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-size: 22rpx;
+  line-height: 40rpx;
+  text-align: center;
+  border-radius: 0 0 0 12rpx;
+}
+.img-cover {
+  position: absolute;
+  left: 0; bottom: 0; right: 0;
+  background: rgba(194, 24, 91, 0.85);
+  color: #fff;
+  font-size: 20rpx;
+  text-align: center;
+  padding: 3rpx 0;
+}
+.img-add {
+  background: #f4f1ef;
+  border: 2rpx dashed #d5cfcb;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4rpx;
+}
+.img-add-icon { font-size: 44rpx; color: var(--ink-3); }
+.img-add-text { font-size: 21rpx; color: var(--ink-3); }
+
+.f-row {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  padding: 26rpx 24rpx;
+  border-bottom: 2rpx solid var(--line);
+}
+.f-row:last-child { border-bottom: none; }
+.f-row-area { align-items: flex-start; }
+.f-label { width: 170rpx; color: var(--ink-2); font-size: 27rpx; flex-shrink: 0; }
+.f-input { flex: 1; font-size: 27rpx; text-align: right; }
+.f-textarea { flex: 1; font-size: 27rpx; min-height: 140rpx; line-height: 1.6; }
+.f-picker { font-size: 27rpx; color: var(--rose); }

@@ -1,0 +1,24 @@
+.page { height: 100vh; display: flex; flex-direction: column; }
+.scroll { flex: 1; }
+.wrap { padding: 20rpx 24rpx; }
+.addr-card {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 28rpx 24rpx;
+  margin-bottom: 20rpx;
+  box-shadow: var(--shadow);
+}
+.addr-head { display: flex; align-items: center; gap: 18rpx; flex-wrap: wrap; }
+.addr-name { font-size: 30rpx; font-weight: 600; }
+.addr-phone { font-size: 26rpx; color: var(--ink-2); }
+.addr-detail { font-size: 26rpx; color: var(--ink-2); margin-top: 10rpx; line-height: 1.5; }
+.addr-edit {
+  font-size: 25rpx;
+  color: var(--rose);
+  padding: 8rpx 0 8rpx 20rpx;
+  border-left: 2rpx solid var(--line);
+  flex-shrink: 0;
+}

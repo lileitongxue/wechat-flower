@@ -1,0 +1,54 @@
+<view class="page">
+  <view class="filters">
+    <view class="search">
+      <input class="flex-1" placeholder="搜索商品名称" value="{{keyword}}"
+        confirm-type="search" bindinput="onKeyword" bindconfirm="onSearch" />
+      <text wx:if="{{keyword}}" class="search-clear" bindtap="onClearKeyword">✕</text>
+    </view>
+    <view class="tabs">
+      <view wx:for="{{statusTabs}}" wx:key="key"
+        class="tab {{status === item.key ? 'active' : ''}}"
+        bindtap="onStatus" data-key="{{item.key}}">{{item.label}}</view>
+    </view>
+  </view>
+
+  <scroll-view scroll-y class="scroll" bindscrolltolower="loadMore">
+    <view class="wrap">
+      <view wx:for="{{list}}" wx:key="_id" class="p">
+        <view class="p-img" bindtap="goEdit" data-id="{{item._id}}">
+          <image wx:if="{{item.cover}}" src="{{item.cover}}" mode="aspectFill" />
+          <view wx:else class="p-img-ph">🌸</view>
+          <view wx:if="{{item.status === 'off'}}" class="p-off">已下架</view>
+        </view>
+        <view class="p-body">
+          <view class="p-name ellipsis" bindtap="goEdit" data-id="{{item._id}}">{{item.name}}</view>
+          <view class="p-meta">
+            <text class="price">{{item.priceText}}</text>
+            <text class="t-sm t-muted">销量 {{item.sales || 0}}</text>
+          </view>
+          <view class="p-stock">
+            <text class="t-sm {{item.stock <= 5 ? 'warn-text' : 't-muted'}}">库存 {{item.stock}}</text>
+            <view class="p-stock-ops">
+              <text class="p-op" catchtap="onStock" data-id="{{item._id}}" data-name="{{item.name}}" data-stock="{{item.stock}}">改库存</text>
+              <text class="p-op" catchtap="onToggle" data-id="{{item._id}}" data-status="{{item.status}}">
+                {{item.status === 'on' ? '下架' : '上架'}}
+              </text>
+              <text class="p-op p-op-del" catchtap="onDelete" data-id="{{item._id}}" data-name="{{item.name}}">删除</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <empty-state wx:if="{{!list.length && !loading}}" icon="🌱" text="没有相关商品"
+        btn-text="上架新商品" bind:action="goEdit" />
+      <view wx:if="{{list.length}}" class="load-more">
+        {{ hasMore ? (loading ? '加载中…' : '上拉加载更多') : '— 共 ' + total + ' 个商品 —' }}
+      </view>
+    </view>
+    <view class="bottom-placeholder"></view>
+  </scroll-view>
+
+  <view class="bottom-bar">
+    <button class="btn btn-primary flex-1" bindtap="goEdit">+ 上架新商品</button>
+  </view>
+</view>

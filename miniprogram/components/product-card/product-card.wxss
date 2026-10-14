@@ -1,0 +1,60 @@
+.pcard {
+  background: #fff;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+/* 竖排瀑布流（首页、分类） */
+.pcard.grid { display: flex; flex-direction: column; }
+.pcard.grid .pcard-img { width: 100%; height: 320rpx; }
+/* 横排列表（搜索结果、管理端） */
+.pcard.list { display: flex; padding: 20rpx; gap: 20rpx; }
+.pcard.list .pcard-img { width: 200rpx; height: 200rpx; border-radius: var(--radius-sm); flex-shrink: 0; }
+
+.pcard-img {
+  position: relative;
+  background: var(--rose-bg);
+  overflow: hidden;
+}
+.pcard-img image { width: 100%; height: 100%; display: block; }
+.pcard-ph {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 72rpx;
+}
+.pcard-sold, .pcard-left {
+  position: absolute;
+  left: 0; bottom: 0;
+  padding: 6rpx 16rpx;
+  font-size: 22rpx;
+  color: #fff;
+}
+.pcard-sold { background: rgba(43, 37, 34, 0.7); }
+.pcard-left { background: rgba(232, 131, 58, 0.9); }
+
+.pcard-body { flex: 1; min-width: 0; padding: 18rpx; display: flex; flex-direction: column; }
+.pcard.list .pcard-body { padding: 0; }
+.pcard-name { font-size: 28rpx; font-weight: 500; line-height: 1.4; }
+.pcard-sub { font-size: 24rpx; color: var(--ink-3); margin-top: 6rpx; }
+.pcard-tags { display: flex; gap: 8rpx; margin-top: 10rpx; flex-wrap: wrap; }
+.pcard-foot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 12rpx;
+}
+.pcard-price { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6rpx; }
+.pcard-price .price { font-size: 32rpx; }
+.pcard-vip { background: linear-gradient(135deg, #8d6e63, #5d4037); color: #fff; font-size: 20rpx; }
+.pcard-add {
+  width: 48rpx; height: 48rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #d81b60, #c2185b);
+  color: #fff;
+  font-size: 36rpx;
+  line-height: 44rpx;
+  text-align: center;
+  flex-shrink: 0;
+}
+.pcard-sales { font-size: 22rpx; color: var(--ink-3); margin-top: 8rpx; }
