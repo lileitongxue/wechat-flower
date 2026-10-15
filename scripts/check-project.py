@@ -85,7 +85,7 @@ for t in app['tabBar']['list']:
 impl = {}
 for d in sorted(os.listdir(CF)):
     idx = os.path.join(CF, d, 'index.js')
-    if d == '_shared' or not os.path.exists(idx): continue
+    if not os.path.exists(idx): continue
     src = open(idx, encoding='utf-8').read()
     m = re.search(r'const actions = \{(.*?)\n\}\n', src, re.S)
     impl[d] = set(re.findall(r'^  (?:async )?(\w+)\s*\(', m.group(1), re.M)) if m else set()
@@ -107,7 +107,7 @@ for dirpath, dirnames, files in os.walk(MP):
                 errs.append(f"{rel(p)}: {fn}.{action} 未实现")
 
 # ---------- 5. 云函数依赖与共享库同步 ----------
-shared = os.path.join(CF, '_shared', 'common.js')
+shared = os.path.join(ROOT, 'shared', 'common.js')
 shared_src = open(shared, encoding='utf-8').read() if os.path.exists(shared) else None
 for d in sorted(impl):
     if not os.path.exists(os.path.join(CF, d, 'package.json')):
@@ -116,7 +116,17 @@ for d in sorted(impl):
     if not os.path.exists(copy):
         errs.append(f"cloudfunctions/{d}: 缺少 common.js，请运行 scripts/sync-shared.sh")
     elif shared_src and open(copy, encoding='utf-8').read() != shared_src:
-        errs.append(f"cloudfunctions/{d}/common.js 与 _shared 不一致，请运行 scripts/sync-shared.sh")
+        errs.append(f"cloudfunctions/{d}/common.js 与 shared/common.js 不一致，请运行 scripts/sync-shared.sh")
+
+# ---------- 6. cloudfunctions/ 下不得有非云函数目录 ----------
+# 开发者工具会把 cloudfunctionRoot 下的每个子目录都当成云函数上传，
+# 没有 index.js 的目录会上传失败。
+for d in sorted(os.listdir(CF)):
+    sub = os.path.join(CF, d)
+    if not os.path.isdir(sub): continue
+    if not os.path.exists(os.path.join(sub, 'index.js')):
+        errs.append(f"cloudfunctions/{d}/ 没有 index.js，会被当成云函数上传并失败；"
+                    f"共享代码请放在仓库根的 shared/")
 
 print(f"页面 {len(declared)} 个（tabBar {len(tabs)}），云函数 {len(impl)} 个，前端调用 {call_count} 处")
 if errs:

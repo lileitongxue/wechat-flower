@@ -37,8 +37,9 @@
 │       ├── reservation-create, reservation-list
 │       ├── user, member, coupon, address-list, address-edit, shop-info
 │       └── admin/            商家管理台（6 个页面）
-├── cloudfunctions/           云函数
-│   ├── _shared/common.js     ★ 共享库唯一源文件
+├── shared/
+│   └── common.js             ★ 云函数共享库的唯一源文件
+├── cloudfunctions/           云函数（每个子目录都会被当成一个云函数上传）
 │   ├── login/                授权登录、资料、手机号
 │   ├── shop/                 商品、分类、店铺、购物车校验
 │   ├── order/                下单（事务扣库存）、查单、取消、收货
@@ -49,7 +50,7 @@
 │   ├── admin/                后台管理（含鉴权）
 │   └── seed/                 初始化管理员与示例数据
 ├── scripts/
-│   ├── sync-shared.sh        同步 _shared/common.js 到各云函数
+│   ├── sync-shared.sh        同步 shared/common.js 到各云函数
 │   ├── check-syntax.py       JS/JSON/WXML 结构检查
 │   └── check-project.py      路由、组件、action 一致性检查
 └── docs/DEPLOY.md            部署与配置详细步骤
@@ -73,7 +74,9 @@
 - **价格与库存以服务端为准**：前端传来的价格只用于界面即时反馈，`order.create` 会用数据库里的最新数据重算。
 - **库存扣减走数据库事务**，并用 `where({ stock: _.gte(qty) })` 做条件更新，避免超卖。
 - **状态流转用乐观锁**：`where({ _id, status: 当前状态 }).update(...)`，`updated === 0` 即表示并发冲突。
-- **共享库只改 `cloudfunctions/_shared/common.js`**，改完运行 `bash scripts/sync-shared.sh` 同步。
+- **共享库只改 `shared/common.js`**，改完运行 `bash scripts/sync-shared.sh` 同步到各云函数。
+  源文件特意放在仓库根目录而非 `cloudfunctions/` 下——开发者工具会把 `cloudfunctions/`
+  的每个子目录都当成云函数上传，放在那里会因缺少 `index.js` 而上传失败。
 
 ## 本地检查
 

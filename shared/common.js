@@ -1,7 +1,9 @@
 /**
  * 云函数公共库（单一事实来源）
- * 本文件由 scripts/sync-shared.sh 同步到各个云函数目录下的 common.js。
- * 请只修改 cloudfunctions/_shared/common.js，改完执行 npm run sync（或直接跑该脚本）。
+ * 这是云函数共享库的唯一源文件，由 scripts/sync-shared.sh 复制到各个云函数目录下的
+ * common.js。请只修改本文件，改完运行 bash scripts/sync-shared.sh 同步。
+ * 注意：源文件放在仓库根的 shared/ 而非 cloudfunctions/ 下，因为开发者工具会把
+ * cloudfunctions/ 的每个子目录都当成云函数上传，放在那里会因缺少 index.js 而失败。
  */
 const cloud = require('wx-server-sdk')
 

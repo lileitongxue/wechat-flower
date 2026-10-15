@@ -1,14 +1,16 @@
 #!/usr/bin/env bash
-# 把 cloudfunctions/_shared/common.js 同步到每个云函数目录。
-# 云函数部署时各自独立打包，无法跨目录 require，因此用复制保持单一事实来源。
+# 把 shared/common.js 同步到每个云函数目录。
+#
+# 为什么要复制：云函数各自独立打包上传，无法跨目录 require，所以每个函数目录下
+# 都需要一份副本。源文件放在仓库根的 shared/ 而非 cloudfunctions/ 下，是因为
+# 开发者工具会把 cloudfunctionRoot 下的每个子目录都当成云函数去上传，
+# 放在那里会导致上传失败。
 set -euo pipefail
 cd "$(dirname "$0")/.."
-SRC="cloudfunctions/_shared/common.js"
+SRC="shared/common.js"
 [ -f "$SRC" ] || { echo "找不到 $SRC"; exit 1; }
 count=0
 for dir in cloudfunctions/*/; do
-  name="$(basename "$dir")"
-  if [ "$name" = "_shared" ]; then continue; fi
   [ -f "$dir/index.js" ] || continue
   cp "$SRC" "$dir/common.js"
   count=$((count+1))

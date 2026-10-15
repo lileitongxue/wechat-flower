@@ -57,10 +57,16 @@
 
 ### 共享库说明
 
-9 个云函数共用 `cloudfunctions/_shared/common.js`。因为云函数各自独立打包、
-无法跨目录 `require`，所以每个函数目录下都有一份复制。
+9 个云函数共用 `shared/common.js`。因为云函数各自独立打包、无法跨目录 `require`，
+所以每个函数目录下都有一份复制（`cloudfunctions/<函数名>/common.js`）。
 
-**修改共享逻辑时，只改 `_shared/common.js`，然后运行：**
+> **源文件为什么不放在 `cloudfunctions/` 下**：开发者工具会把 `cloudfunctionRoot`
+> （即 `cloudfunctions/`）下的**每个子目录**都识别为一个云函数。共享库目录没有
+> `index.js`，上传时必然报错。因此源文件放在仓库根的 `shared/`。
+>
+> 同理，**不要在 `cloudfunctions/` 下新建任何非云函数目录**。
+
+**修改共享逻辑时，只改 `shared/common.js`，然后运行：**
 
 ```bash
 bash scripts/sync-shared.sh
