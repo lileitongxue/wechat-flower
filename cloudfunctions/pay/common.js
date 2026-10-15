@@ -65,6 +65,18 @@ class BizError extends Error {
 const ok = (data = null) => ({ success: true, data })
 const fail = (message, code = 'BIZ_ERROR') => ({ success: false, code, message })
 
+/**
+ * 判断是否「集合不存在」错误。
+ * 云数据库在集合未创建时抛 -502005，但不同 SDK 版本的文案不一致（中英文都有），
+ * 所以同时匹配错误码和文案，避免漏判。
+ */
+function isCollectionMissing(err) {
+  if (!err) return false
+  const code = err.errCode != null ? err.errCode : err.code
+  const msg = String(err.errMsg || err.message || '')
+  return code === -502005 || /collection not exist|collection does not exist|集合不存在/i.test(msg)
+}
+
 /** 统一包装：捕获异常并返回结构化结果，避免前端拿到 500 裸错误 */
 function handler(actions) {
   return async (event = {}) => {
@@ -83,6 +95,10 @@ function handler(actions) {
     } catch (err) {
       console.error(`[${action}] 执行失败:`, err)
       if (err instanceof BizError) return fail(err.message, err.code)
+      // 集合未创建是首次部署最常见的问题，单独给出可操作的提示
+      if (isCollectionMissing(err)) {
+        return fail('数据库集合尚未创建，请先执行「一键初始化」', 'COLLECTION_MISSING')
+      }
       return fail(err.message || '服务异常，请稍后重试', 'INTERNAL_ERROR')
     }
   }
@@ -222,6 +238,7 @@ module.exports = {
   ok,
   fail,
   handler,
+  isCollectionMissing,
   getUser,
   requireAdmin,
   levelOf,

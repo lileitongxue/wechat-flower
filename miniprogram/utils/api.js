@@ -5,7 +5,7 @@
  */
 
 /** 不需要弹 toast 的错误码（页面自行处理） */
-const SILENT_CODES = ['NO_AUTH', 'PAY_NOT_CONFIGURED']
+const SILENT_CODES = ['NO_AUTH', 'PAY_NOT_CONFIGURED', 'COLLECTION_MISSING']
 
 /**
  * @param {string} name 云函数名
@@ -49,7 +49,7 @@ function normalizeError(err) {
     return '云开发环境未初始化，请先在控制台开通'
   }
   if (raw.includes('database collection not exists') || raw.includes('collection not exists')) {
-    return '数据库集合不存在，请先运行初始化'
+    return '数据库集合尚未创建，请到「我的」页执行一键初始化'
   }
   if (raw.includes('timeout')) return '请求超时，请检查网络'
   return raw.replace(/^cloud\.callFunction:fail\s*/, '')

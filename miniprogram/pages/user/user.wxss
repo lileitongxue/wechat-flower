@@ -97,17 +97,6 @@
 
 .admin-card .cell-label { color: var(--rose); font-weight: 600; }
 
-.init-entry {
-  margin: 20rpx 24rpx;
-  padding: 28rpx;
-  background: #fff7ea;
-  border: 2rpx dashed #e8c99a;
-  border-radius: var(--radius);
-  text-align: center;
-  font-size: 25rpx;
-  color: #8a6434;
-}
-
 .version {
   text-align: center;
   color: var(--ink-3);

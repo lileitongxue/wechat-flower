@@ -11,7 +11,9 @@ Page({
     couponCount: 0,
     spentText: '0',
     discountText: '',
-    showInitEntry: false
+    showInitEntry: false,
+    loginFailed: false,
+    setupHint: ''
   },
 
   onLoad() {
@@ -28,9 +30,21 @@ Page({
   onShow() {
     cart.refreshBadge()
     app.ready().then(user => {
-      if (user) this.applyUser(user)
-      this.loadCounters()
-      this.loadMember()
+      if (user) {
+        this.applyUser(user)
+        this.loadCounters()
+        this.loadMember()
+      } else {
+        // 登录失败：多半是集合未创建。此时仍要亮出初始化入口，
+        // 否则用户会卡在「什么按钮都没有」的死循环里。
+        this.setData({
+          loginFailed: true,
+          showInitEntry: true,
+          setupHint: app.globalData.setupRequired
+            ? '数据库尚未初始化，点下方按钮一键完成'
+            : '登录失败，请检查云函数是否已部署'
+        })
+      }
     })
   },
 
@@ -41,7 +55,9 @@ Page({
       spentText: util.yuanShort(user.totalSpent || 0),
       discountText: user.discount < 1000 ? (user.discount / 100).toFixed(1) : '',
       // 没有任何管理员时，允许首个用户自助成为店主
-      showInitEntry: !user.isAdmin
+      showInitEntry: !user.isAdmin,
+      loginFailed: false,
+      setupHint: ''
     })
   },
 
@@ -107,24 +123,61 @@ Page({
       .catch(() => {})
   },
 
-  /** 首个用户自助成为店主；已有管理员时云函数会拒绝 */
+  /**
+   * 一键初始化：创建数据库集合 → 设为店主 → 灌示例数据。
+   * 可重复执行，已存在的集合与数据会自动跳过。
+   */
   onInitAdmin() {
     util.confirm(
-      '仅当店铺尚无管理员时可用。设为店主后可管理商品、订单与库存。',
-      '设为店主'
+      '将自动完成：创建数据库集合 → 将当前账号设为店主 → 灌入示例商品与优惠券。\n可重复执行，已存在的内容不会重复创建。',
+      '一键初始化'
     ).then(yes => {
       if (!yes) return
-      api.seed('initAdmin', {}, { loading: true })
-        .then(() => app.refreshUser())
-        .then(user => {
-          if (user) this.applyUser(user)
-          util.success('已设为店主')
-        })
+      api.seed('bootstrap', {}, { loading: true, loadingText: '初始化中，请稍候' })
+        .then(res => this.showBootstrapResult(res))
         .catch(err => {
-          if (err.code === 'ADMIN_EXISTS') {
-            this.setData({ showInitEntry: false })
-          }
+          // 失败时给出可操作的下一步，而不是只弹一句「操作失败」
+          wx.showModal({
+            title: '初始化失败',
+            content: `${err.message || '未知错误'}\n\n请确认：\n1. seed 云函数已上传部署\n2. 云开发环境已开通`,
+            showCancel: false,
+            confirmColor: '#c2185b'
+          })
         })
+    })
+  },
+
+  /** 展示初始化结果，并把登录态刷新一次 */
+  showBootstrapResult(res) {
+    const lines = [
+      `集合：新建 ${res.collections.created.length} 个，已存在 ${res.collections.existed.length} 个`,
+      res.becameAdmin ? '当前账号已设为店主' : (res.isAdmin ? '当前账号已是店主' : '店铺已有管理员'),
+      res.seeded ? res.seeded.message : '示例数据已存在，未重复创建'
+    ]
+    if (res.collections.failed.length) {
+      lines.push(`失败 ${res.collections.failed.length} 个：${res.collections.failed.map(f => f.name).join('、')}`)
+    }
+    if (res.collections.needManual) {
+      // 自动建集合不可用时，必须明确告诉用户下一步做什么
+      lines.push('')
+      lines.push('当前环境不支持自动建集合，请到「云开发控制台 → 数据库」手动创建：')
+      lines.push(res.collections.failed.map(f => f.name).join('、'))
+      lines.push('建好后再次点击「一键初始化」即可。')
+    }
+    wx.showModal({
+      title: res.collections.needManual ? '需要手动创建集合' : '初始化完成',
+      content: lines.join('\n'),
+      showCancel: false,
+      confirmText: res.collections.needManual ? '知道了' : '开始使用',
+      confirmColor: '#c2185b',
+      success: () => {
+        if (res.collections.needManual) return
+        app.refreshUser().then(user => {
+          if (user) this.applyUser(user)
+          this.loadCounters()
+          this.loadMember()
+        })
+      }
     })
   },
 

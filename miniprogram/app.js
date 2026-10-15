@@ -11,6 +11,8 @@ App({
     shop: null,
     /** 登录请求的 Promise，避免多页面并发重复登录 */
     loginPromise: null,
+    /** 登录失败是否因为数据库集合未创建——决定「我的」页是否显示初始化入口 */
+    setupRequired: false,
     systemInfo: null
   },
 
@@ -52,11 +54,15 @@ App({
         this.globalData.userInfo = res.user
         this.globalData.openid = res.openid
         this.globalData.isAdmin = !!res.user.isAdmin
+        // 登录成功说明数据库可用，清掉未初始化标记
+        this.globalData.setupRequired = false
         this.emit('userChange', res.user)
         return res.user
       })
       .catch(err => {
         console.error('登录失败', err)
+        // 集合未创建时登录必然失败，标记出来让「我的」页引导一键初始化
+        if (err.code === 'COLLECTION_MISSING') this.globalData.setupRequired = true
         // 失败后允许下次重试
         this.globalData.loginPromise = null
         return null

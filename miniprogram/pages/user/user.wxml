@@ -1,5 +1,15 @@
 <view class="page">
   <scroll-view scroll-y class="scroll">
+    <!-- 未初始化时的显式引导：登录本身依赖数据库，首次部署必然走到这里 -->
+    <view wx:if="{{loginFailed}}" class="setup-banner">
+      <view class="setup-title">⚠️ 还差最后一步</view>
+      <view class="setup-text">{{setupHint}}</view>
+      <view class="setup-steps">
+        <view class="setup-step">1. 确认 seed 云函数已「上传并部署」</view>
+        <view class="setup-step">2. 点击下方按钮完成初始化</view>
+      </view>
+    </view>
+
     <!-- 用户头部 -->
     <view class="header" style="padding-top: {{statusBarHeight + 20}}px">
       <view class="profile">
@@ -123,8 +133,12 @@
         <text class="cell-value t-muted">商品 · 订单 · 库存</text>
       </view>
     </view>
-    <view wx:elif="{{showInitEntry}}" class="init-entry" bindtap="onInitAdmin">
-      首次使用？点此将当前账号设为店主
+    <view wx:if="{{showInitEntry}}" class="init-card">
+      <view class="init-title">{{loginFailed ? '🔧 一键初始化' : '🛠 首次使用？'}}</view>
+      <view class="init-desc">
+        自动创建 10 个数据库集合，并把当前账号设为店主{{loginFailed ? '' : '（此入口仅在店铺尚无管理员时出现）'}}
+      </view>
+      <button class="btn btn-primary init-btn" bindtap="onInitAdmin">一键初始化</button>
     </view>
 
     <view class="version">花知道 v1.0.0</view>

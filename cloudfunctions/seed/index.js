@@ -4,9 +4,114 @@
  * 仅用于首次部署与本地调试。上线后建议在云开发控制台删除本函数，
  * 或把 initAdmin 的调用权限收紧。
  */
-const { handler, db, COLL, BizError, getUser } = require('./common')
+const {
+  handler, db, COLL, BizError, getUser, requireAdmin, isCollectionMissing
+} = require('./common')
+
+/** 需要创建的集合清单（顺序即创建顺序） */
+const ALL_COLLECTIONS = Object.values(COLL)
 
 const actions = {
+  /**
+   * 创建所有需要的集合。已存在的会被跳过（createCollection 对已存在集合会抛错，
+   * 这里视为成功）。可重复调用。
+   */
+  async ensureCollections() {
+    const created = []
+    const existed = []
+    const failed = []
+    let apiUnsupported = false
+    for (const name of ALL_COLLECTIONS) {
+      try {
+        await db.createCollection(name)
+        created.push(name)
+      } catch (err) {
+        const text = String(err.errMsg || err.message || '')
+        if (/already exist|已存在|-501001/i.test(text)) {
+          // 已存在属于正常情况
+          existed.push(name)
+        } else if (/createCollection|not a function|is not defined/i.test(text)) {
+          // 该 SDK 版本或环境不支持自动建集合，退回到「检测是否可用」
+          apiUnsupported = true
+          try {
+            await db.collection(name).limit(1).count()
+            existed.push(name)
+          } catch (e2) {
+            failed.push({ name, message: '需在控制台手动创建' })
+          }
+        } else {
+          failed.push({ name, message: text })
+        }
+      }
+    }
+    return {
+      created, existed, failed,
+      total: ALL_COLLECTIONS.length,
+      // 前端据此提示「需要手动建集合」
+      needManual: apiUnsupported && failed.length > 0
+    }
+  },
+
+  /**
+   * 一键初始化：建集合 → 设为店主 → 灌示例数据。
+   * 设计成幂等且可重复调用，首次部署时前端只调这一个接口。
+   */
+  async bootstrap(event, { openid }) {
+    const user = await getUser(openid, { createIfMissing: true })
+
+    // 1. 建集合（login 能走到这里说明 users 已可读，其余集合可能还缺）
+    const collections = await this.ensureCollections()
+
+    // 2. 决定是否设为店主：没有任何管理员时才授予
+    const adminCount = await db.collection(COLL.USERS).where({ role: 'admin' }).count()
+      .then(r => r.total).catch(() => 0)
+    let becameAdmin = false
+    if (adminCount === 0) {
+      await db.collection(COLL.USERS).doc(user._id).update({
+        data: { role: 'admin', updatedAt: new Date() }
+      })
+      becameAdmin = true
+    } else if (user.role === 'admin') {
+      becameAdmin = true
+    }
+
+    // 3. 灌示例数据（需要管理员身份，第 2 步刚授过权时重新读取）
+    const fresh = await getUser(openid)
+    const isAdmin = !!fresh && fresh.role === 'admin'
+    let seeded = null
+    if (isAdmin) {
+      seeded = await this.seedData(event, { openid })
+    }
+
+    return {
+      collections,
+      becameAdmin,
+      isAdmin,
+      seeded,
+      message: [
+        `集合：新建 ${collections.created.length} 个，已存在 ${collections.existed.length} 个`,
+        becameAdmin ? '已将当前账号设为店主' : (isAdmin ? '当前账号已是店主' : '店铺已有管理员，跳过授权'),
+        seeded ? seeded.message : '未灌入示例数据'
+      ].join('；')
+    }
+  },
+
+  /** 只读诊断：哪些集合还没建好，便于排查 */
+  async status() {
+    const missing = []
+    const ready = []
+    for (const name of ALL_COLLECTIONS) {
+      try {
+        await db.collection(name).limit(1).count()
+        ready.push(name)
+      } catch (err) {
+        if (isCollectionMissing(err)) missing.push(name)
+        else ready.push(name)
+      }
+    }
+    return { ready, missing, allReady: missing.length === 0, total: ALL_COLLECTIONS.length }
+  },
+
   /**
    * 把调用者设为管理员。
    * 首个管理员可直接设置；之后必须由已有管理员调用 grantAdmin。
@@ -29,7 +134,6 @@ const actions = {
 
   /** 现有管理员给他人授权 */
   async grantAdmin(event, { openid }) {
-    const { requireAdmin } = require('./common')
     await requireAdmin(openid)
     const { targetOpenid, phone } = event
     const where = targetOpenid ? { _openid: targetOpenid } : { phone: String(phone || '') }
@@ -44,8 +148,9 @@ const actions = {
 
   /** 灌入示例分类、商品、优惠券、店铺信息 */
   async seedData(event, { openid }) {
-    const { requireAdmin } = require('./common')
     await requireAdmin(openid)
+    // 集合可能还没建（首次部署），先补齐，否则写分类/商品时会报集合不存在
+    await this.ensureCollections()
     const now = new Date()
 
     // 店铺信息
