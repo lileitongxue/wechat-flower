@@ -3,7 +3,7 @@
  * 本文件由 scripts/sync-shared.sh 同步到各个云函数目录下的 common.js。
  * 请只修改 cloudfunctions/_shared/common.js，改完执行 npm run sync（或直接跑该脚本）。
  */
-const cloud = require('wx-server-sdk')
+const cloud = require('cloudfunctions/_shared/node_modules/wx-server-sdk')
 
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 

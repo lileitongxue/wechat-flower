@@ -2,7 +2,7 @@
   <!-- 自定义导航：沉浸式顶部 -->
   <view class="nav" style="padding-top: {{statusBarHeight}}px">
     <view class="nav-bar" style="height: {{navBarHeight}}px">
-      <text class="nav-logo">花知道</text>
+      <text class="nav-logo">赤陶</text>
       <view class="nav-search" bindtap="goSearch">
         <text class="nav-search-icon">🔍</text>
         <text class="nav-search-ph">搜索玫瑰、康乃馨…</text>

@@ -2,8 +2,8 @@
   "miniprogramRoot": "miniprogram/",
   "cloudfunctionRoot": "cloudfunctions/",
   "projectname": "wechat-flower",
-  "description": "花知道 · 花店小程序（商城 + 预约）",
-  "appid": "touristappid",
+  "description": "赤陶花店小程序（商城 + 预约）",
+  "appid": "wx8bb4bce9e836be02",
   "compileType": "miniprogram",
   "libVersion": "3.4.0",
   "setting": {
@@ -26,14 +26,42 @@
     "packNpmRelationList": [],
     "minifyWXSS": true,
     "useCompilerPlugins": false,
-    "ignoreUploadUnusedFiles": true
+    "ignoreUploadUnusedFiles": true,
+    "compileWorklet": false,
+    "uglifyFileName": false,
+    "uploadWithSourceMap": true,
+    "minifyWXML": true,
+    "localPlugins": false,
+    "disableUseStrict": false,
+    "condition": false,
+    "babelSetting": {
+      "ignore": [],
+      "disablePlugins": [],
+      "outputPath": ""
+    }
   },
   "condition": {
     "miniprogram": {
       "list": [
-        { "name": "首页", "pathName": "pages/index/index", "query": "", "scene": null },
-        { "name": "管理台", "pathName": "pages/admin/dashboard/dashboard", "query": "", "scene": null }
+        {
+          "name": "首页",
+          "pathName": "pages/index/index",
+          "query": "",
+          "scene": null
+        },
+        {
+          "name": "管理台",
+          "pathName": "pages/admin/dashboard/dashboard",
+          "query": "",
+          "scene": null
+        }
       ]
     }
-  }
+  },
+  "simulatorPluginLibVersion": {},
+  "packOptions": {
+    "ignore": [],
+    "include": []
+  },
+  "editorSetting": {}
 }
